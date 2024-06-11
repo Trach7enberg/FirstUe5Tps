@@ -1,7 +1,7 @@
 // FutureTPS Game All Rights Reserved
 
 
-#include "Effects/WeaponFXComponent.h"
+#include "Effects/TPSWeaponFXComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 
@@ -24,6 +24,7 @@ void UWeaponFXComponent::PlayImpactFX(const FHitResult &Hit) const
 {
 	if (Hit.bBlockingHit)
 	{
+		// 将特效系统生成到Hit的冲击点位置
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraSystemEffect, Hit.ImpactPoint,
 		                                               Hit.ImpactPoint.Rotation(), FVector(1), true);
 	}

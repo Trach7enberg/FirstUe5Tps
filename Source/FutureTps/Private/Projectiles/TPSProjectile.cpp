@@ -1,11 +1,12 @@
 // FutureTPS Game All Rights Reserved
 
-DEFINE_LOG_CATEGORY_STATIC(MyATPSProjectileLog, All, All)
 
 #include "Projectiles/TPSProjectile.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "Effects/TPSWeaponFXComponent.h"
 
+DEFINE_LOG_CATEGORY_STATIC(MyATPSProjectileLog, All, All);
 
 ATPSProjectile::ATPSProjectile()
 {
@@ -18,11 +19,16 @@ ATPSProjectile::ATPSProjectile()
 	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Block);
 	SetRootComponent(CollisionComponent);
 
+	WeaponFXComponent = CreateDefaultSubobject<UWeaponFXComponent>("WeaponFXComponent");
+
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
 
 	ProjectileMovementComponent->InitialSpeed = 2500.0f;
 	ProjectileMovementComponent->MaxSpeed = 2500.0f;
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;
+
+	// 射弹的重力作用
+	ProjectileMovementComponent->ProjectileGravityScale = 0.5f;
 }
 
 void ATPSProjectile::BeginPlay()
@@ -30,6 +36,7 @@ void ATPSProjectile::BeginPlay()
 	Super::BeginPlay();
 	check(ProjectileMovementComponent);
 	check(CollisionComponent);
+	check(WeaponFXComponent);
 	ProjectileMovementComponent->Velocity = ShotDirection * ProjectileMovementComponent->InitialSpeed;
 
 	// 绑定碰撞盒碰撞的回调函数
@@ -45,8 +52,10 @@ void ATPSProjectile::OnProjectileHit(UPrimitiveComponent *HitComponent, AActor *
 {
 	if (!GetWorld()) { return; }
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Hit")));
+
 	// segments是球体的片段数，越大就越像圆
-	DrawDebugSphere(GetWorld(), Hit.ImpactPoint, DamageRadius, 20, FColor::Purple,false,3.f);
+	DrawDebugSphere(GetWorld(), Hit.ImpactPoint, DamageRadius, 20, FColor::Purple, false, 3.f);
+
 
 	// BIsDoFullDamage为true时,角色不管在圆球的哪一个点上都受到完全的伤害,为false时,根据角色离圆心点的距离进行插值越近圆心伤害越接近baseDamage
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), DamageValue, GetActorLocation(), DamageRadius, nullptr,
@@ -54,6 +63,9 @@ void ATPSProjectile::OnProjectileHit(UPrimitiveComponent *HitComponent, AActor *
 	                                    this, GetPlayerController(), BIsDoFullDamage);
 
 	ProjectileMovementComponent->StopMovementImmediately();
+
+	// 播放特效
+	WeaponFXComponent->PlayImpactFX(Hit);
 
 	Destroy();
 }

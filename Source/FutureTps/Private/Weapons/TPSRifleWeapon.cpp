@@ -1,10 +1,25 @@
 // FutureTPS Game All Rights Reserved
 
-class ATPSBaseCharacter;
-DEFINE_LOG_CATEGORY_STATIC(MyATPSRifleWeaponLog, All, All)
 
 #include "Weapons/TPSRifleWeapon.h"
 #include "Characters/TPSBaseCharacter.h"
+#include "Effects/TPSWeaponFXComponent.h"
+
+
+DEFINE_LOG_CATEGORY_STATIC(MyATPSRifleWeaponLog, All, All)
+
+class ATPSBaseCharacter;
+
+ATPSRifleWeapon::ATPSRifleWeapon()
+{
+	WeaponFXComponent = CreateDefaultSubobject<UWeaponFXComponent>("WeaponFXComponent");
+}
+
+void ATPSRifleWeapon::BeginPlay()
+{
+	Super::BeginPlay();
+	check(WeaponFXComponent);
+}
 
 void ATPSRifleWeapon::Fire() { AutoFire(); }
 
@@ -43,6 +58,7 @@ void ATPSRifleWeapon::AutoFire()
 	}
 }
 
+
 bool ATPSRifleWeapon::GetTraceData(FVector &TraceStart, FVector &TraceEnd, float HalfConeAng) const
 {
 	return Super::GetTraceData(TraceStart, TraceEnd, HalfConeAng);
@@ -66,13 +82,13 @@ void ATPSRifleWeapon::MakeShot()
 	if (LineTraceHitResult.bBlockingHit && GetAngleBetweenMuzzleAndHitPoint(
 		GetMuzzleWorldTransform(), LineTraceHitResult) <= 90.0f)
 	{
-
+		WeaponFXComponent->PlayImpactFX(LineTraceHitResult);
 		// 绘制枪口射线 
-		DrawDebugLine(GetWorld(), GetMuzzleWorldTransform().GetLocation(), LineTraceHitResult.ImpactPoint, FColor::Red,
-		              false, 2,
-		              0, 3);
+		// DrawDebugLine(GetWorld(), GetMuzzleWorldTransform().GetLocation(), LineTraceHitResult.ImpactPoint, FColor::Red,
+		//               false, 2,
+		//               0, 3);
 
-		DrawDebugSphere(GetWorld(), LineTraceHitResult.ImpactPoint, 5.f, 5, FColor::Red, false, 3.f, 0, 3.f);
+		// DrawDebugSphere(GetWorld(), LineTraceHitResult.ImpactPoint, 5.f, 5, FColor::Red, false, 3.f, 0, 3.f);
 		// 打印被击中的骨骼名字
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
 		                                 FString::Printf(TEXT("Hit Bone: %s"), *LineTraceHitResult.BoneName.ToString()),

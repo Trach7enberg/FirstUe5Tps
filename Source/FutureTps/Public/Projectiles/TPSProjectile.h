@@ -7,6 +7,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "TPSProjectile.generated.h"
 
+class UWeaponFXComponent;
 /**
  * 射弹类实体
  */
@@ -29,6 +30,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Weapon)
 	UProjectileMovementComponent *ProjectileMovementComponent;
 
+	// 特效组件,利用它来播放特效
+	UPROPERTY(VisibleAnywhere,Category=VFX)
+	UWeaponFXComponent * WeaponFXComponent;
 
 	// 球型碰撞体半径
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Weapon)
@@ -46,6 +50,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Weapon)
 	bool BIsDoFullDamage = false;
 
+	/// 射弹击中物体时候就会调用这个函数 , (射弹在发射器类里生成)
 	UFUNCTION()
 	void OnProjectileHit(UPrimitiveComponent *HitComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp,
 	                     FVector NormalImpulse, const FHitResult &Hit);

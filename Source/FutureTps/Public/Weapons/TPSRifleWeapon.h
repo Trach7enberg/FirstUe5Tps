@@ -6,21 +6,30 @@
 #include "Weapons/TPSBaseWeapon.h"
 #include "TPSRifleWeapon.generated.h"
 
+class UWeaponFXComponent;
 /**
- * 
+ *  步枪类
  */
 UCLASS()
 class FUTURETPS_API ATPSRifleWeapon : public ATPSBaseWeapon
 {
 	GENERATED_BODY()
-
+	
 public:
+	explicit ATPSRifleWeapon();
+
 	virtual void Fire() override;
 	virtual void SemiFire() override;
 	virtual void StopFire() override;
 	virtual void AutoFire() override;
 
 protected:
+	virtual void BeginPlay() override;
+
+	// 特效组件,利用它来播放特效
+	UPROPERTY(VisibleAnywhere,Category=VFX)
+	UWeaponFXComponent * WeaponFXComponent;
+	
 	// 自动开火速率
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta=(ClampMin = 0.01f, ClampMax=0.1f))
 	float FireRate = 0.05f;

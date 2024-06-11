@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "WeaponFXComponent.generated.h"
+#include "TPSWeaponFXComponent.generated.h"
 
 class UNiagaraSystem;
 /**
@@ -20,6 +20,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction *ThisTickFunction) override;
 
+	// 生成特效
 	void PlayImpactFX(const FHitResult& Hit) const;
 
 protected:
