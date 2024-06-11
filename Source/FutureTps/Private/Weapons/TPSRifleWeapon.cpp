@@ -82,7 +82,7 @@ void ATPSRifleWeapon::MakeShot()
 	if (LineTraceHitResult.bBlockingHit && GetAngleBetweenMuzzleAndHitPoint(
 		GetMuzzleWorldTransform(), LineTraceHitResult) <= 90.0f)
 	{
-		WeaponFXComponent->PlayImpactFX(LineTraceHitResult);
+
 		// 绘制枪口射线 
 		// DrawDebugLine(GetWorld(), GetMuzzleWorldTransform().GetLocation(), LineTraceHitResult.ImpactPoint, FColor::Red,
 		//               false, 2,
@@ -95,6 +95,7 @@ void ATPSRifleWeapon::MakeShot()
 		                                 false, FVector2D(2, 2));
 
 		MakeDamage(LineTraceHitResult);
+		WeaponFXComponent->PlayImpactFX(LineTraceHitResult);
 	}
 	else
 	{

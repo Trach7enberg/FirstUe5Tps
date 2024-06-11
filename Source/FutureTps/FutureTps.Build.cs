@@ -6,7 +6,16 @@ public class FutureTps : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG","Niagara"});
+		PublicDependencyModuleNames.AddRange(new[]
+		{
+			"Core",
+			"CoreUObject",
+			"Engine",
+			"InputCore",
+			"UMG",
+			"Niagara",
+			"PhysicsCore",
+		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
 

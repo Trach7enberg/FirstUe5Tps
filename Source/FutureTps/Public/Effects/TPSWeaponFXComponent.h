@@ -7,6 +7,8 @@
 #include "TPSWeaponFXComponent.generated.h"
 
 class UNiagaraSystem;
+class UPhysicalMaterial;
+
 /**
  * 武器特效(FX)组件
  */
@@ -21,14 +23,19 @@ public:
 	                           FActorComponentTickFunction *ThisTickFunction) override;
 
 	// 生成特效
-	void PlayImpactFX(const FHitResult& Hit) const;
+	void PlayImpactFX(const FHitResult &Hit) const;
 
 protected:
 	virtual void BeginPlay() override;
 
 
+	// 当击中无法确定的物理材质时,使用这个特效
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="VFX")
-	UNiagaraSystem *NiagaraSystemEffect;
+	UNiagaraSystem *DefaultEffect;
+
+	// 利用Map映射:物理材质和对应的击中特效
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="VFX")
+	TMap<UPhysicalMaterial *, UNiagaraSystem *> EffectsMap;
 
 
 };

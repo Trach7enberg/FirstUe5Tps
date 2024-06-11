@@ -57,11 +57,9 @@ void ATPSParticleLauncherWeapon::MakeShot()
 		              false, 2,
 		              0, 3);
 
-		// 推迟actor生成,这样我们的beginPlay函数在FinishSpawning后才会调用
+		// 推迟actor生成,这样我们Projectile的beginPlay函数在FinishSpawning后才会调用
 		// 在此之前我们可以配置东西 ,这里我们需要提前设置射弹的射击方向  
 		Projectile->FinishSpawning(SpawnTransform);
 	}
 	DecreaseBullet();
 }
-
-

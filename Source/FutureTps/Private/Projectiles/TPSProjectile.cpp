@@ -17,6 +17,10 @@ ATPSProjectile::ATPSProjectile()
 	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::Type::QueryOnly);
 	// 能被所有东西挡住
 	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Block);
+	
+	// 允许返回的HitResult拿到击中物体的物理材质
+	CollisionComponent->bReturnMaterialOnMove = true;
+
 	SetRootComponent(CollisionComponent);
 
 	WeaponFXComponent = CreateDefaultSubobject<UWeaponFXComponent>("WeaponFXComponent");
@@ -27,7 +31,7 @@ ATPSProjectile::ATPSProjectile()
 	ProjectileMovementComponent->MaxSpeed = 2500.0f;
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;
 
-	// 射弹的重力作用
+	// 射弹的重力作用	
 	ProjectileMovementComponent->ProjectileGravityScale = 0.5f;
 }
 

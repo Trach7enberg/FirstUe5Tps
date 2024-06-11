@@ -77,6 +77,10 @@ void ATPSBaseWeapon::MakeTraceHit(FHitResult &HitResult, const FVector &TraceSta
 	FCollisionQueryParams CollisionParam;
 	// 射线会忽略当前武器的actor,不会击中自己
 	CollisionParam.AddIgnoredActor(GetOwner());
+
+	// 允许返回的HitResult拿到击中物体的物理材质
+	CollisionParam.bReturnPhysicalMaterial = true;
+
 	// 发出射线检测碰撞(起点是摄像机的屏幕中心)，相关碰撞信息保存在HitResult
 	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, CollisionParam);
 }
