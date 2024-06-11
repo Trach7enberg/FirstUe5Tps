@@ -1,0 +1,91 @@
+// FutureTPS Game All Rights Reserved
+
+
+#include "UI/TPSPlayerHUDWidget.h"
+#include "Components/TPSWeaponLogicComponent.h"
+#include "Components/TPSHealthComponent.h"
+#include "TPSUtil/TPSUtils.h"
+
+
+float UTPSPlayerHUDWidget::GetHealthPercent() const
+{
+	const UTPSHealthComponent *HealthComponent = FTPSUtils::GetComponentByCurrentPlayer<UTPSHealthComponent>(
+		GetOwningPlayerPawn());
+
+	if (!HealthComponent) { return 0.0f; }
+
+	return HealthComponent->GetHealthPercent();
+}
+
+bool UTPSPlayerHUDWidget::GetCurrentWeaponUIData(FWeaponUIData &WeaponUIData) const
+{
+	const UTPSWeaponLogicComponent *WeaponLogicComponent = FTPSUtils::GetComponentByCurrentPlayer<
+		UTPSWeaponLogicComponent>(GetOwningPlayerPawn());
+	if (!WeaponLogicComponent) { return false; }
+
+
+	return WeaponLogicComponent->GetWeaponUIData(WeaponUIData);
+}
+
+bool UTPSPlayerHUDWidget::GetCurrentWeaponAmmo(FAmmoData &AmmoData) const
+{
+	const UTPSWeaponLogicComponent *WeaponLogicComponent = FTPSUtils::GetComponentByCurrentPlayer<
+		UTPSWeaponLogicComponent>(GetOwningPlayerPawn());
+
+	if (!WeaponLogicComponent) { return false; }
+
+
+	return WeaponLogicComponent->GetWeaponAmmo(AmmoData);
+}
+
+FText UTPSPlayerHUDWidget::GetCurrentAmmoText() const
+{
+
+	FAmmoData AmmoData;
+	if (!GetCurrentWeaponAmmo(AmmoData)) { return FText::FromString(""); }
+
+	const FString String = FString::FromInt(AmmoData.Bullets);
+
+	if (AmmoData.InfiniteMag) { return FText::FromString(String + "/" + TEXT("∞")); }
+
+	return FText::FromString(String + "/" + FString::FromInt(AmmoData.Magazines));
+}
+
+bool UTPSPlayerHUDWidget::IsPlayerAlive() const
+{
+	const UTPSHealthComponent *HealthComponent = FTPSUtils::GetComponentByCurrentPlayer<UTPSHealthComponent>(
+		GetOwningPlayerPawn());
+	return HealthComponent && !HealthComponent->IsDead();
+}
+
+bool UTPSPlayerHUDWidget::IsPlayerSpectating() const
+{
+	// 获取当前玩家controller
+	const APlayerController *PlayerController = GetOwningPlayer();
+
+	return PlayerController && PlayerController->GetStateName() == NAME_Spectating;
+}
+
+ESlateVisibility UTPSPlayerHUDWidget::SettingPlayerVisibility() const
+{
+	if (IsPlayerAlive()) { return ESlateVisibility::Visible; }
+
+
+	return ESlateVisibility::Hidden;
+}
+
+ESlateVisibility UTPSPlayerHUDWidget::SettingSpectatorVisibility() const
+{
+	if (!IsPlayerSpectating()) { return ESlateVisibility::Hidden; }
+	return ESlateVisibility::Visible;
+}
+
+ESlateVisibility UTPSPlayerHUDWidget::IsReloading() const
+{
+	const UTPSWeaponLogicComponent *WeaponLogicComponent = FTPSUtils::GetComponentByCurrentPlayer<
+		UTPSWeaponLogicComponent>(GetOwningPlayerPawn());
+
+	if (!WeaponLogicComponent || !WeaponLogicComponent->IsReloading()) { return ESlateVisibility::Hidden;; }
+
+	return ESlateVisibility::Visible;
+}

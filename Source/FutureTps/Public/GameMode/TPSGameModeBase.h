@@ -1,0 +1,20 @@
+
+// FutureTPS Game All Rights Reserved
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/GameModeBase.h"
+#include "TPSGameModeBase.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class FUTURETPS_API ATPSGameModeBase : public AGameModeBase
+{
+	GENERATED_BODY()
+
+public:
+	ATPSGameModeBase();
+};
