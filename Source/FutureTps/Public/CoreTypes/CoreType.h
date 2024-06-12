@@ -62,7 +62,8 @@ struct FWeaponUIData
 
 /// 生命组件的委托
 DECLARE_MULTICAST_DELEGATE(FOnDeath);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float);
+/// 多播委托,第一个参数Health传播当前的生命值,第二个参数BIsDecreaseHealth 表示当前血量是增加还是下降
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnHealthChanged, float Health, bool BIsDecreaseHealth);
 DECLARE_MULTICAST_DELEGATE(FNeedHeal);
 
 /// VFS

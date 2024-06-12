@@ -30,10 +30,11 @@ void UTPSHealthComponent::BeginPlay()
 void UTPSHealthComponent::SetHealth(float value)
 {
 	if (IsDead()) { return; }
-	Health = FMath::Clamp(value, Health, MaxHealth);
+	Health = FMath::Clamp(value, 0, MaxHealth);
 
 	// 当血量改变时才更新血量文本显示,在character类里绑定回调函数,该委托一广播就会调用:更新文本显示的那个回调函数
-	OnHealthChanged.Broadcast(Health);
+	// 生命值增加中所以是false
+	OnHealthChanged.Broadcast(Health, false);
 }
 
 void UTPSHealthComponent::AutoHeal()
@@ -62,10 +63,10 @@ void UTPSHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, co
 {
 	if (Damage <= 0 || IsDead()) { return; }
 
-	Health = FMath::Clamp(Health - Damage, 0, MaxHealth);
+	SetHealth(Health - Damage);
 
-	// 现在生命值减少,所以广播通知绑定了该委托的回调函数进行调用
-	OnHealthChanged.Broadcast(Health);
+	// 现在生命值减少 所以是true,所以广播通知绑定了该委托的回调函数进行调用
+	OnHealthChanged.Broadcast(Health, true);
 	UE_LOG(MyUTPSHealthComponentLog, Error, TEXT("Hurted"));
 	// 处理是否自动回血	
 	NeedHeal.Broadcast();

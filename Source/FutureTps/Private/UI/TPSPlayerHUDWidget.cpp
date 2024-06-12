@@ -7,13 +7,26 @@
 #include "TPSUtil/TPSUtils.h"
 
 
+bool UTPSPlayerHUDWidget::Initialize()
+{
+
+	if (UTPSHealthComponent *HealthComponent = FTPSUtils::GetComponentByCurrentPlayer<UTPSHealthComponent>(
+		GetOwningPlayerPawn()))
+	{
+		// 绑定生命组件的委托 (收到伤害时的委托)
+		HealthComponent->OnHealthChanged.AddUObject(this, &UTPSPlayerHUDWidget::HealthChanged);
+	}
+
+
+	return Super::Initialize();
+}
+
 float UTPSPlayerHUDWidget::GetHealthPercent() const
 {
 	const UTPSHealthComponent *HealthComponent = FTPSUtils::GetComponentByCurrentPlayer<UTPSHealthComponent>(
 		GetOwningPlayerPawn());
 
 	if (!HealthComponent) { return 0.0f; }
-
 	return HealthComponent->GetHealthPercent();
 }
 
@@ -88,4 +101,10 @@ ESlateVisibility UTPSPlayerHUDWidget::IsReloading() const
 	if (!WeaponLogicComponent || !WeaponLogicComponent->IsReloading()) { return ESlateVisibility::Hidden;; }
 
 	return ESlateVisibility::Visible;
+}
+
+void UTPSPlayerHUDWidget::HealthChanged(float Health,bool BIsDecreaseHealth)
+{
+	OnHealthChanged(Health,BIsDecreaseHealth);
+	
 }

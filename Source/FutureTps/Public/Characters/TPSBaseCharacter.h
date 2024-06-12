@@ -1,4 +1,3 @@
-
 // FutureTPS Game All Rights Reserved
 
 #pragma once
@@ -113,9 +112,11 @@ private:
 	UFUNCTION()
 	void OnDeath();
 
-	// 生命组件当生命值变化时候委托的回调函数
+	/// 生命组件当生命值变化时候委托的回调函数
+	/// @param Health 变化的生命值
+	/// @param BIsDecreaseHealth 当前生命值变化是降低还是增加 
 	UFUNCTION()
-	void OnHealthChanged(float Health);
+	void OnHealthChanged(float Health, bool BIsDecreaseHealth);
 
 	// 当角色落地时候触发该回调函数,记得在LandedDelegate绑定
 	UFUNCTION()

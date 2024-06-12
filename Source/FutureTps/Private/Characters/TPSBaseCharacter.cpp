@@ -216,7 +216,7 @@ void ATPSBaseCharacter::OnDeath()
 }
 
 
-void ATPSBaseCharacter::OnHealthChanged(float Health)
+void ATPSBaseCharacter::OnHealthChanged(float Health,bool BIsDecreaseHealth)
 {
 
 	// 给字体渲染组件更新内容文字

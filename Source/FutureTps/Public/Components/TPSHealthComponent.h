@@ -34,6 +34,7 @@ public:
 
 	bool IsDead() const { return FMath::IsNearlyZero(Health); }
 
+
 	// 获取声明百分比
 	UFUNCTION(BlueprintCallable, Category=Heal)
 	float GetHealthPercent() const { return Health / MaxHealth; }
@@ -69,6 +70,7 @@ protected:
 
 private:
 	float Health = 0.0f;
+
 
 	// 定时器
 	FTimerHandle HealTimerHandle;

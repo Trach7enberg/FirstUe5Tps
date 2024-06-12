@@ -17,6 +17,8 @@ class FUTURETPS_API UTPSPlayerHUDWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	/// 本类初始化函数
+	virtual bool Initialize() override;
 	///  获取玩家生命值
 	/// @return 生命值
 	UFUNCTION(BlueprintCallable, Category=UI)
@@ -53,8 +55,13 @@ public:
 
 	/// 是否在换弹
 	/// @return 
-	UFUNCTION(BlueprintCallable, Category=UI)
+	UFUNCTION()
 	ESlateVisibility IsReloading() const;
+
+
+	/// 在widget蓝图类里实现方法体,用于通知当前(扣血了),即受伤 显示受伤动画
+	UFUNCTION(BlueprintImplementableEvent, Category=UI)
+	void OnHealthChanged(float Health, bool BIsDecreaseHealth);
 
 private:
 	/// 
@@ -66,4 +73,11 @@ private:
 	/// @return 
 	UFUNCTION(BlueprintCallable, Category=UI)
 	bool IsPlayerSpectating() const;
+
+	/// 当生命值变化时生命组件回调的函数
+	/// @param health 
+	/// @param BIsDecreaseHealth 
+	UFUNCTION(BlueprintCallable, Category=UI)
+	void HealthChanged(float health, bool BIsDecreaseHealth);
+
 };
