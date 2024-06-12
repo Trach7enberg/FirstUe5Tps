@@ -7,6 +7,7 @@
 #include "CoreTypes/CoreType.h"
 #include "TPSHealthComponent.generated.h"
 
+class UCameraShakeBase;
 
 UCLASS()
 class FUTURETPS_API UTPSHealthComponent : public UActorComponent
@@ -63,6 +64,9 @@ protected:
 		meta=(EditCondition="BisAutoHealth", ClampMin=0.00001f, ClampMax=100.0f))
 	float HealModifier = 10.0f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=VFX)
+	TSubclassOf<UCameraShakeBase> CameraShake;
+
 private:
 	float Health = 0.0f;
 
@@ -84,4 +88,6 @@ private:
 	// 处理是否自动回血的委托回调函数
 	void HealHandle();
 
+	/// 播放抖动摄像机
+	void OscillationCamera() const;
 };

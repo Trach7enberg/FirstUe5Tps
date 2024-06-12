@@ -34,7 +34,7 @@ public:
 	float SphereRadius = 50.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Pickup)
-	float RespawnDelay = 2.0f;
+	float RespawnDelay = 5.0f;
 
 protected:
 	virtual void BeginPlay() override;

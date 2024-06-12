@@ -21,5 +21,6 @@ void ATPSHealthPickUp::Pickup(AActor *Actor)
 	UTPSHealthComponent *HealthComponent = FTPSUtils::GetComponentByCurrentPlayer<
 		UTPSHealthComponent>(Actor);
 	if (!HealthComponent) { return; }
+
 	HealthComponent->Heal(ResupplyPercent);
 }

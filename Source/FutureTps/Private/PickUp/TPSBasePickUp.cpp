@@ -47,9 +47,10 @@ void ATPSBasePickUp::Respawn()
 }
 
 void ATPSBasePickUp::RespawnHandle()
+
 {
 
-	GetWorld()->GetTimerManager().ClearTimer(RespawnTimer);
+	if (GetRootComponent()->IsVisible()) { UE_LOG(LogTemp, Error, TEXT("WTF")); }
 	GetWorld()->GetTimerManager().SetTimer(RespawnTimer, this, &ATPSBasePickUp::Respawn, RespawnDelay,
 	                                       false);
 }
@@ -60,8 +61,8 @@ void ATPSBasePickUp::Pickup(AActor *Actor)
 {
 	if (GetRootComponent())
 	{
-		this->SetActorEnableCollision(false);
 		GetRootComponent()->SetVisibility(false, true);
+		this->SetActorEnableCollision(false);
 		RespawnHandle();
 	}
 }
@@ -71,7 +72,11 @@ void ATPSBasePickUp::NotifyActorBeginOverlap(AActor *OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	if (CanPickup(OtherActor)) { Pickup(OtherActor); }
+	if (CanPickup(OtherActor))
+	{
+		UE_LOG(MyATPSBasePickUpLog, Error, TEXT("IN"));
+		Pickup(OtherActor);
+	}
 
 
 }

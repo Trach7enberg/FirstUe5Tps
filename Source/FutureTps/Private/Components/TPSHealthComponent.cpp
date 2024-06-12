@@ -1,7 +1,10 @@
 // FutureTPS Game All Rights Reserved
-DEFINE_LOG_CATEGORY_STATIC(MyUTPSHealthComponentLog, All, All)
+
 
 #include "Components/TPSHealthComponent.h"
+
+
+DEFINE_LOG_CATEGORY_STATIC(MyUTPSHealthComponentLog, All, All)
 
 // Sets default values for this component's properties
 UTPSHealthComponent::UTPSHealthComponent()
@@ -63,13 +66,31 @@ void UTPSHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, co
 
 	// 现在生命值减少,所以广播通知绑定了该委托的回调函数进行调用
 	OnHealthChanged.Broadcast(Health);
-	// UE_LOG(MyUTPSHealthComponentLog, Error, TEXT("Hurted"));
-	// 处理是否自动回血
+	UE_LOG(MyUTPSHealthComponentLog, Error, TEXT("Hurted"));
+	// 处理是否自动回血	
 	NeedHeal.Broadcast();
+
+	OscillationCamera();
 
 	if (IsDead())
 	{
 		// 死亡则广播,所有接到通知并且已经绑定回调函数的将会调用回调函数处理
 		OnDeath.Broadcast();
 	}
+}
+
+
+void UTPSHealthComponent::OscillationCamera() const
+{
+	if (IsDead() || !CameraShake) { return; }
+
+	// 获取APawn,GetOwner() 是 character,APawn的子类 
+	const auto Player = Cast<APawn>(GetOwner());
+	if (!Player) { return; }
+
+	// APawn里获取玩家控制器的指针,再通过控制器获取控制的角色身上的相机播放抖动
+	const auto Controller = Player->GetController<APlayerController>();
+	if (!Controller || !Controller->PlayerCameraManager) { return; }
+
+	Controller->PlayerCameraManager->StartCameraShake(CameraShake);
 }

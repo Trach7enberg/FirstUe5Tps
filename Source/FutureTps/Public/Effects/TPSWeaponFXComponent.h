@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "CoreTypes/CoreType.h"
 #include "TPSWeaponFXComponent.generated.h"
 
 class UNiagaraSystem;
@@ -31,11 +32,11 @@ protected:
 
 	// 当击中无法确定的物理材质时,使用这个特效
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="VFX")
-	UNiagaraSystem *DefaultEffect;
+	FImpactData DefaultImpactData;
 
 	// 利用Map映射:物理材质和对应的击中特效
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="VFX")
-	TMap<UPhysicalMaterial *, UNiagaraSystem *> EffectsMap;
+	TMap<UPhysicalMaterial *, FImpactData> ImpactDataMap;
 
 
 };

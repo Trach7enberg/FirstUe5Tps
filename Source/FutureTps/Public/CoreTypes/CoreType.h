@@ -8,8 +8,9 @@
 DECLARE_MULTICAST_DELEGATE(FOnSwitchWhenChangeMagz);
 
 class ATPSBaseWeapon;
+
 // 武器结构
-USTRUCT(Blueprintable)
+USTRUCT(BlueprintType)
 struct FWeaponData
 {
 	GENERATED_BODY()
@@ -27,7 +28,7 @@ struct FWeaponData
 };
 
 /// 武器弹药结构
-USTRUCT(Blueprintable)
+USTRUCT(BlueprintType)
 struct FAmmoData
 {
 	GENERATED_BODY()
@@ -46,7 +47,7 @@ struct FAmmoData
 };
 
 /// 武器UI数据,由于图片是纹理类型,所以们使用UTexture2D
-USTRUCT(Blueprintable)
+USTRUCT(BlueprintType)
 struct FWeaponUIData
 {
 	GENERATED_BODY()
@@ -63,3 +64,47 @@ struct FWeaponUIData
 DECLARE_MULTICAST_DELEGATE(FOnDeath);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float);
 DECLARE_MULTICAST_DELEGATE(FNeedHeal);
+
+/// VFS
+class UNiagaraSystem;
+
+/// 贴花数据结构
+USTRUCT(BlueprintType)
+struct FDecalData
+{
+	GENERATED_BODY()
+
+	// C++中的材质基类是UMaterialInterface
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=VFX)
+	UMaterialInterface *MaterialInterface;
+
+	// 贴花尺寸
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=VFX)
+	FVector Size = FVector(10.0f);
+
+	// 贴花生命周期
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=VFX)
+	float LifeTime = 5.0f;
+
+	// 贴花逐渐消散的时间
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=VFX)
+	float FadeOutTime = 0.7f;
+
+};
+
+/// 子弹冲击物体时的特效
+USTRUCT(BlueprintType)
+struct FImpactData
+{
+	GENERATED_BODY()
+
+	// Niagara系统
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=VFX)
+	UNiagaraSystem *NiagaraSystemEffect;
+
+	// 贴花结构
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=VFX)
+	FDecalData DecalData;
+};
+
+/// VFS

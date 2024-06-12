@@ -1,14 +1,13 @@
-
 // FutureTPS Game All Rights Reserved
 
-
-DEFINE_LOG_CATEGORY_STATIC(MyATPSBaseCharacterLog, All, All)
 
 #include "Characters/TPSBaseCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/TPSHealthComponent.h"
 #include "Components/TPSWeaponLogicComponent.h"
 #include "Components/TPSCharacterMovementComponent.h"
+
+DEFINE_LOG_CATEGORY_STATIC(MyATPSBaseCharacterLog, All, All)
 
 void ATPSBaseCharacter::InitMesh()
 {
@@ -108,7 +107,7 @@ void ATPSBaseCharacter::BeginPlay()
 void ATPSBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	// UE_LOG(MyATPSBaseCharacterLog,Error,TEXT("%f"),HealthComponent->GetHealth());
+	UE_LOG(MyATPSBaseCharacterLog,Error,TEXT("%f"),HealthComponent->GetHealth());
 }
 
 // Called to bind functionality to input
@@ -200,13 +199,17 @@ void ATPSBaseCharacter::MyJump()
 void ATPSBaseCharacter::OnDeath()
 {
 	// TODO 如果角色在半空中死亡会浮在空中,待修复
-	PlayAnimMontage(DeathAnimMontage);
+	// PlayAnimMontage(DeathAnimMontage);
+
 	BCanRotatingCamera = false;
 	GetCharacterMovement()->DisableMovement();
 	SetLifeSpan(LifeSpanOnDeath);
 
 	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	// GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
+
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::Type::PhysicsOnly);
+	GetMesh()->SetSimulatePhysics(true);
 
 	// 视角转移到观察者视角
 	if (Controller) { Controller->ChangeState(NAME_Spectating); }
@@ -231,5 +234,5 @@ void ATPSBaseCharacter::OnGroundLanded(const FHitResult &Hit)
 	float
 		FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, AbsFallVelocity);
 
-	TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
+	this->TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
 }
