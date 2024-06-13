@@ -1,9 +1,12 @@
 // FutureTPS Game All Rights Reserved
 
-DEFINE_LOG_CATEGORY_STATIC(MyATPSBaseWeaponLog, All, All)
 
 #include "Weapons/TPSBaseWeapon.h"
 #include "GameFramework/Character.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+
+DEFINE_LOG_CATEGORY_STATIC(MyATPSBaseWeaponLog, All, All)
 
 // Sets default values
 ATPSBaseWeapon::ATPSBaseWeapon()
@@ -164,4 +167,12 @@ void ATPSBaseWeapon::DebugLogAmmo() const
 	FString AmmoInfo = "Bullets : " + FString::FromInt(CurrentAmmo.Bullets) + " / ";
 	AmmoInfo += (CurrentAmmo.InfiniteMag) ? "InfiniteMagz" : "Magazines : " + FString::FromInt(CurrentAmmo.Magazines);
 	UE_LOG(MyATPSBaseWeaponLog, Error, TEXT("%s"), *AmmoInfo);
+}
+
+UNiagaraComponent *ATPSBaseWeapon::SpawnMuzzleFXComponent()
+{
+	return UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX, WeaponSkeletalMeshComponent, MuzzlePosition,
+	                                                    FVector::Zero(),
+	                                                    FRotator::ZeroRotator, EAttachLocation::Type::SnapToTarget,
+	                                                    true);
 }

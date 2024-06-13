@@ -2,6 +2,9 @@
 
 
 #include "Projectiles/TPSProjectile.h"
+
+
+#include "NiagaraComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "Effects/TPSWeaponFXComponent.h"
@@ -17,7 +20,7 @@ ATPSProjectile::ATPSProjectile()
 	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::Type::QueryOnly);
 	// 能被所有东西挡住
 	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Block);
-	
+
 	// 允许返回的HitResult拿到击中物体的物理材质
 	CollisionComponent->bReturnMaterialOnMove = true;
 
@@ -26,6 +29,8 @@ ATPSProjectile::ATPSProjectile()
 	WeaponFXComponent = CreateDefaultSubobject<UWeaponFXComponent>("WeaponFXComponent");
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
+	// ParticleTraceComponent = CreateDefaultSubobject<UNiagaraComponent>("ParticleTrace");
+	// ParticleTraceComponent->SetupAttachment(GetRootComponent());
 
 	ProjectileMovementComponent->InitialSpeed = 2500.0f;
 	ProjectileMovementComponent->MaxSpeed = 2500.0f;
@@ -58,7 +63,7 @@ void ATPSProjectile::OnProjectileHit(UPrimitiveComponent *HitComponent, AActor *
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Hit")));
 
 	// segments是球体的片段数，越大就越像圆
-	DrawDebugSphere(GetWorld(), Hit.ImpactPoint, DamageRadius, 20, FColor::Purple, false, 3.f);
+	// DrawDebugSphere(GetWorld(), Hit.ImpactPoint, DamageRadius, 20, FColor::Purple, false, 3.f);
 
 
 	// BIsDoFullDamage为true时,角色不管在圆球的哪一个点上都受到完全的伤害,为false时,根据角色离圆心点的距离进行插值越近圆心伤害越接近baseDamage

@@ -15,6 +15,8 @@ public class FutureTps : ModuleRules
 			"UMG",
 			"Niagara",
 			"PhysicsCore",
+			"GameplayTasks",
+			"NavigationSystem",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });

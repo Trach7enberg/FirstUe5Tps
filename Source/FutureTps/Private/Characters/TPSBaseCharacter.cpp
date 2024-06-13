@@ -70,6 +70,8 @@ ATPSBaseCharacter::ATPSBaseCharacter(const FObjectInitializer &ObjectInitializer
 	// 生命值文本 控制人不可见
 	HealthTextComponent->SetOwnerNoSee(true);
 	HealthTextComponent->SetRelativeLocation(FVector(0, 24, 85));
+	// 文本初始值设置
+	HealthTextComponent->SetText(FText::FromString(FString("100")));
 
 	SpringArmComponent->TargetArmLength = 300.0f;
 	SpringArmComponent->bUsePawnControlRotation = true;
@@ -107,7 +109,7 @@ void ATPSBaseCharacter::BeginPlay()
 void ATPSBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	UE_LOG(MyATPSBaseCharacterLog,Error,TEXT("%f"),HealthComponent->GetHealth());
+	// UE_LOG(MyATPSBaseCharacterLog,Error,TEXT("%f"),HealthComponent->GetHealth());
 }
 
 // Called to bind functionality to input
@@ -216,7 +218,7 @@ void ATPSBaseCharacter::OnDeath()
 }
 
 
-void ATPSBaseCharacter::OnHealthChanged(float Health,bool BIsDecreaseHealth)
+void ATPSBaseCharacter::OnHealthChanged(float Health, bool BIsDecreaseHealth)
 {
 
 	// 给字体渲染组件更新内容文字

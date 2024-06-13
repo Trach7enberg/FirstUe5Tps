@@ -23,7 +23,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction *ThisTickFunction) override;
 
-	// 生成特效
+	/// 生成冲击点的特效和贴花效果
+	/// @param Hit 击中数据
 	void PlayImpactFX(const FHitResult &Hit) const;
 
 protected:

@@ -7,6 +7,8 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "TPSProjectile.generated.h"
 
+
+class UNiagaraComponent;
 class UWeaponFXComponent;
 /**
  * 射弹类实体
@@ -19,9 +21,13 @@ class FUTURETPS_API ATPSProjectile : public AActor
 public:
 	ATPSProjectile();
 
-	UPROPERTY(EditDefaultsOnly, Category=Weapon)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Weapon)
 	USphereComponent *CollisionComponent;
-	
+
+	// 射弹的粒子轨迹特效
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=VFX)
+	// UNiagaraComponent *ParticleTraceComponent;
+
 
 	void SetShotDirection(const FVector &Direction);
 
@@ -31,8 +37,8 @@ protected:
 	UProjectileMovementComponent *ProjectileMovementComponent;
 
 	// 特效组件,利用它来播放特效
-	UPROPERTY(VisibleAnywhere,Category=VFX)
-	UWeaponFXComponent * WeaponFXComponent;
+	UPROPERTY(VisibleAnywhere, Category=VFX)
+	UWeaponFXComponent *WeaponFXComponent;
 
 	// 球型碰撞体半径
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Weapon)
@@ -57,9 +63,9 @@ protected:
 
 	AController *GetPlayerController() const;
 
-	
+
 	virtual void BeginPlay() override;
-	
+
 private:
 	float LifeSec = 3.0f;
 };

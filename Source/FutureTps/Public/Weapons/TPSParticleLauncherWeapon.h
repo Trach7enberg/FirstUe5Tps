@@ -8,7 +8,7 @@
 #include "TPSParticleLauncherWeapon.generated.h"
 
 /**
- * 
+ * 武器:粒子发射器类
  */
 UCLASS()
 class FUTURETPS_API ATPSParticleLauncherWeapon : public ATPSBaseWeapon

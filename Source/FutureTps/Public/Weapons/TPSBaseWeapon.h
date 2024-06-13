@@ -7,9 +7,11 @@
 #include "CoreTypes/CoreType.h"
 #include "TPSBaseWeapon.generated.h"
 
+class UNiagaraComponent;
+class UNiagaraSystem;
 
 /**
- * 这是武器的mesh类
+ * 这是武器的基类
  */
 UCLASS()
 class FUTURETPS_API ATPSBaseWeapon : public AActor
@@ -64,7 +66,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category=UI)
 	FWeaponUIData WeaponUIData{};
 
-protected:
+	// 枪口火花资源(NiagaraSystem资源)
+	UPROPERTY(EditDefaultsOnly, Category=VFX)
+	UNiagaraSystem *MuzzleFX;
+
+
 	/// 生成射线检测碰撞,如果发生Hit了则将HitResult数据填补
 	/// @param HitResult 击中物体的信息
 	/// @param TraceStart 射线开始位置
@@ -120,6 +126,10 @@ protected:
 	void ChangeMagz();
 
 	void DebugLogAmmo() const;
+
+	/// 生成NiagaraSystem在游戏里的实体
+	/// @return Niagara组件
+	UNiagaraComponent *SpawnMuzzleFXComponent();
 
 private:
 	// 武器当前的弹药类

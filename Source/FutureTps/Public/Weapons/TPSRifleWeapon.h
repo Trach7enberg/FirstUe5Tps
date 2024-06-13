@@ -7,6 +7,8 @@
 #include "TPSRifleWeapon.generated.h"
 
 class UWeaponFXComponent;
+class UNiagaraSystem;
+
 /**
  *  步枪类
  */
@@ -14,7 +16,7 @@ UCLASS()
 class FUTURETPS_API ATPSRifleWeapon : public ATPSBaseWeapon
 {
 	GENERATED_BODY()
-	
+
 public:
 	explicit ATPSRifleWeapon();
 
@@ -26,10 +28,20 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	// 特效组件,利用它来播放特效
-	UPROPERTY(VisibleAnywhere,Category=VFX)
-	UWeaponFXComponent * WeaponFXComponent;
-	
+	// 用来播放物体冲击表面的特效(贴花之类的)
+	UPROPERTY(VisibleAnywhere, Category=VFX)
+	UWeaponFXComponent *WeaponFXComponent;
+
+	// 子弹轨迹特效类资源
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=VFX)
+	UNiagaraSystem *BulletTraceNiagaraSystem;
+
+	// 这个是Niagara系统中创建的变量的名字
+	// 我们将通过这个名字修改特效系统里的变量值
+	UPROPERTY(VisibleAnywhere, Category=VFX)
+	FName BeamEndName = "TraceTarget";
+
+
 	// 自动开火速率
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta=(ClampMin = 0.01f, ClampMax=0.1f))
 	float FireRate = 0.05f;
@@ -51,4 +63,20 @@ private:
 	FTimerHandle AutoFireTimer;
 	// 光线击中时返回的击中数据
 	FHitResult LineTraceHitResult;
+
+	// 保存枪口火花特效的实体
+	UPROPERTY()
+	UNiagaraComponent *RifleMuzzleFX = nullptr;
+
+
+	/// 初始化(生成)枪口特效 暂存到RifleMuzzleFX
+	void InitRifleMuzzleFX();
+
+	/// 设置枪口特效可见度
+	void SetRifleMuzzleFXVisiblity(bool Visible) const;
+
+	/// 生成子弹轨迹特效
+	/// @param Start 
+	/// @param End 
+	void SpawnBulletTraceFX(const FVector &Start, const FVector &End) const;
 };

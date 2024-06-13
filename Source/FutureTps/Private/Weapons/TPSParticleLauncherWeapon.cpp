@@ -53,13 +53,16 @@ void ATPSParticleLauncherWeapon::MakeShot()
 		Projectile->SetOwner(GetOwner());
 
 		// 绘制枪口射线 
-		DrawDebugLine(GetWorld(), GetMuzzleWorldTransform().GetLocation(), EndPoint, FColor::Red,
-		              false, 2,
-		              0, 3);
+		// DrawDebugLine(GetWorld(), GetMuzzleWorldTransform().GetLocation(), EndPoint, FColor::Red,
+		//               false, 2,
+		//               0, 3);
 
 		// 推迟actor生成,这样我们Projectile的beginPlay函数在FinishSpawning后才会调用
 		// 在此之前我们可以配置东西 ,这里我们需要提前设置射弹的射击方向  
 		Projectile->FinishSpawning(SpawnTransform);
 	}
 	DecreaseBullet();
+
+	// 发射器枪口火花只需要播放一次就够了
+	SpawnMuzzleFXComponent();
 }

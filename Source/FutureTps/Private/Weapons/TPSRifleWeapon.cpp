@@ -4,6 +4,8 @@
 #include "Weapons/TPSRifleWeapon.h"
 #include "Characters/TPSBaseCharacter.h"
 #include "Effects/TPSWeaponFXComponent.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(MyATPSRifleWeaponLog, All, All)
@@ -19,6 +21,7 @@ void ATPSRifleWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	check(WeaponFXComponent);
+	InitRifleMuzzleFX();
 }
 
 void ATPSRifleWeapon::Fire() { AutoFire(); }
@@ -44,7 +47,7 @@ void ATPSRifleWeapon::StopFire()
 	if (!GetWorld()) { return; }
 	GetWorld()->GetTimerManager().ClearTimer(AutoFireTimer);
 	UE_LOG(MyATPSRifleWeaponLog, Error, TEXT("StopFire"));
-
+	SetRifleMuzzleFXVisiblity(false);
 	BIsUnderFire = false;
 }
 
@@ -66,9 +69,11 @@ bool ATPSRifleWeapon::GetTraceData(FVector &TraceStart, FVector &TraceEnd, float
 
 void ATPSRifleWeapon::MakeShot()
 {
-	UE_LOG(MyATPSRifleWeaponLog, Error, TEXT("Fire"));
+
 	if (!GetWorld() || IsBulletEmpty()) { return; }
+	UE_LOG(MyATPSRifleWeaponLog, Error, TEXT("Fire"));
 	BIsUnderFire = true;
+	SetRifleMuzzleFXVisiblity(true);
 
 
 	FVector StartLocation;
@@ -78,12 +83,13 @@ void ATPSRifleWeapon::MakeShot()
 
 	MakeTraceHit(LineTraceHitResult, StartLocation, EndLocation);
 
+	FVector BulletTraceEnd = EndLocation;
 	// 击中则画射线(只有当枪口的前向量 和枪口点到击中点这条向量 的点积 角度小于90才绘制射线)
 	if (LineTraceHitResult.bBlockingHit && GetAngleBetweenMuzzleAndHitPoint(
 		GetMuzzleWorldTransform(), LineTraceHitResult) <= 90.0f)
 	{
-
-		// 绘制枪口射线 
+		EndLocation = LineTraceHitResult.ImpactPoint;
+		// 绘制枪口Debug射线 
 		// DrawDebugLine(GetWorld(), GetMuzzleWorldTransform().GetLocation(), LineTraceHitResult.ImpactPoint, FColor::Red,
 		//               false, 2,
 		//               0, 3);
@@ -94,15 +100,18 @@ void ATPSRifleWeapon::MakeShot()
 		                                 FString::Printf(TEXT("Hit Bone: %s"), *LineTraceHitResult.BoneName.ToString()),
 		                                 false, FVector2D(2, 2));
 
+
 		MakeDamage(LineTraceHitResult);
 		WeaponFXComponent->PlayImpactFX(LineTraceHitResult);
 	}
-	else
-	{
+	// else
+	// {
+	//
+	// 	// 绘制摄像机射线
+	// 	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Yellow, false, 3.f, 0, 3);
+	// }
 
-		// 绘制摄像机射线
-		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Yellow, false, 3.f, 0, 3);
-	}
+	SpawnBulletTraceFX(GetMuzzleWorldTransform().GetLocation(), EndLocation);
 	DecreaseBullet();
 }
 
@@ -112,5 +121,32 @@ void ATPSRifleWeapon::MakeDamage(const FHitResult &HitResult)
 	if (ATPSBaseCharacter *AtpsBaseCharacter = Cast<ATPSBaseCharacter>(HitResult.GetActor()))
 	{
 		AtpsBaseCharacter->TakeDamage(WeaponDamage, FDamageEvent{}, GetPlayerController(), this);
+	}
+}
+
+void ATPSRifleWeapon::InitRifleMuzzleFX()
+{
+	if (!RifleMuzzleFX) { RifleMuzzleFX = SpawnMuzzleFXComponent(); }
+	SetRifleMuzzleFXVisiblity(false);
+}
+
+void ATPSRifleWeapon::SetRifleMuzzleFXVisiblity(bool Visible) const
+{
+	if (!RifleMuzzleFX) { return; }
+
+	// 暂停粒子播放
+	RifleMuzzleFX->SetPaused(!Visible);
+	// 粒子可见度设置
+	RifleMuzzleFX->SetVisibility(Visible, true);
+}
+
+void ATPSRifleWeapon::SpawnBulletTraceFX(const FVector &Start, const FVector &End) const
+{
+	const auto BulletTraceFX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+		GetWorld(), BulletTraceNiagaraSystem, Start);
+	if (BulletTraceNiagaraSystem)
+	{
+		// 设置在NiagaraSystem中变量名字为（TraceTarget）的向量值
+		BulletTraceFX->SetVariableVec3(BeamEndName, End);
 	}
 }
