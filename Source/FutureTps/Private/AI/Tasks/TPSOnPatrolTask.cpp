@@ -7,6 +7,8 @@
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
+DEFINE_LOG_CATEGORY_STATIC(MyUTPSOnPatrolTaskLog, All, All);
+
 UTPSOnPatrolTask::UTPSOnPatrolTask()
 {
 	// 显示的结点名字
@@ -33,9 +35,21 @@ EBTNodeResult::Type UTPSOnPatrolTask::ExecuteTask(UBehaviorTreeComponent &OwnerC
 	// 保存 导航系统成功找到可走的点的数据
 	FNavLocation FoundedNavLocation;
 
+	FVector Center =
+		AIPawn->GetActorLocation();
+
+	if (!SelfCenter)
+	{
+		// 通过黑板获取Object
+		auto Actor = Cast<AActor>(BlackBoard->GetValueAsObject(EnemyActorKey.SelectedKeyName));
+		if (!Actor) { return EBTNodeResult::Failed; }
+		
+		Center = Actor->GetActorLocation();
+	}
+
 	const bool bRandomReachablePointInRadius = NavSys->GetRandomReachablePointInRadius(
-		AIPawn->GetActorLocation(), Radius, FoundedNavLocation);
-	// 以Radius为半径,AI位置为中心,返回一个可以在导航系统(区内)到达的点
+		Center, Radius, FoundedNavLocation);
+	// 以Radius为半径,AI位置为中心(SelfCenter为ture时),返回一个可以在导航系统(区内)到达的点
 
 	// 找不到可以走的点,返回Failed
 	if (!bRandomReachablePointInRadius) { return EBTNodeResult::Failed; }

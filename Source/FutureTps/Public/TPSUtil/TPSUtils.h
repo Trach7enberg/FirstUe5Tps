@@ -26,8 +26,11 @@ public:
 	template <typename ComponentType>
 	static ComponentType *GetComponentByCurrentPlayer(AActor *PlayerActor)
 	{
-		APawn *Pawn = Cast<APawn>(PlayerActor);
-		if (!Pawn) { return nullptr; }
-		return GetComponentByCurrentPlayer<ComponentType>(Pawn);
+		if (!PlayerActor)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Cant be null!"))
+			return nullptr;
+		}
+		return PlayerActor->GetComponentByClass<ComponentType>();
 	}
 };

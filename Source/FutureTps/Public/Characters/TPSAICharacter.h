@@ -6,6 +6,7 @@
 #include "Characters/TPSBaseCharacter.h"
 #include "TPSAICharacter.generated.h"
 
+class UBehaviorTree;
 /**
  * AI角色类,继承自玩家的基础角色类
  */
@@ -17,4 +18,7 @@ class FUTURETPS_API ATPSAICharacter : public ATPSBaseCharacter
 public:
 	// 调用父类构造器,(父类构造器通过这种构造器重写了角色移动组件)
 	ATPSAICharacter(const FObjectInitializer &ObjectInitializer);
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category=AI)
+	UBehaviorTree * BehaviorTreeAsset;
 };

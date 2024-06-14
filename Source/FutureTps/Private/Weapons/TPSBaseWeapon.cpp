@@ -42,11 +42,26 @@ bool ATPSBaseWeapon::GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRot
 	// ViewLocation摄像机的view点,就是摄像机的正中心
 	// ViewRotation可以通过摄像机的rotation获取方向向量
 
-	APlayerController *PlayerController = GetPlayerController();
-	// 获取摄像机视点,用来纠正射击轨道 (即子弹是从枪口射到摄像机的准星中间)
-	if (!PlayerController) { return false; }
 
-	PlayerController->GetPlayerViewPoint(ViewLocation, ViewRotation);
+	// 判断当前控制的人是AI还是玩家
+	const auto TPSCharacter = Cast<ACharacter>(GetOwner());
+	if (TPSCharacter->IsPlayerControlled())
+	{
+		APlayerController *PlayerController = GetPlayerController();
+
+		// 获取摄像机视点,用来纠正射击轨道 (即子弹是从枪口射到摄像机的准星中间)
+		if (!PlayerController) { return false; }
+
+		PlayerController->GetPlayerViewPoint(ViewLocation, ViewRotation);
+		return true;
+	}
+	else
+	{
+		// 如果是AI,那么返回的坐标是以枪口点进行射击
+		ViewLocation = GetMuzzleWorldTransform().GetLocation();
+		ViewRotation = GetMuzzleWorldTransform().Rotator();
+	}
+
 	return true;
 }
 

@@ -86,7 +86,7 @@ protected:
 	/// @param ViewLocation 视点的坐标向量
 	/// @param ViewRotation 视点的旋转方向度数
 	/// @return 获取摄像机中心视点成功则为true,否则为false
-	bool GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRotation) const;
+	virtual bool GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRotation) const;
 
 	/// 获取枪口的transform
 	/// @return 枪口的transform
