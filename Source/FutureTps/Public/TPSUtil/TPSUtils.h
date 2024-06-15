@@ -1,5 +1,7 @@
 #pragma once
 
+DEFINE_LOG_CATEGORY_STATIC(MyFTPSUtilsLog, All, All);
+
 class FTPSUtils
 {
 public:
@@ -11,7 +13,11 @@ public:
 	static ComponentType *GetComponentByCurrentPlayer(APawn *PlayerPawn)
 	{
 		// 获取当前类的玩家Pawn
-		if (!PlayerPawn) { return nullptr; }
+		if (!PlayerPawn)
+		{
+			UE_LOG(MyFTPSUtilsLog, Error, TEXT("Cant be null!"))
+			return nullptr;
+		}
 
 		UActorComponent *ComponentByClass = PlayerPawn->GetComponentByClass(
 			ComponentType::StaticClass());
@@ -28,7 +34,7 @@ public:
 	{
 		if (!PlayerActor)
 		{
-			UE_LOG(LogTemp, Error, TEXT("Cant be null!"))
+			UE_LOG(MyFTPSUtilsLog, Error, TEXT("Cant be null!"))
 			return nullptr;
 		}
 		return PlayerActor->GetComponentByClass<ComponentType>();

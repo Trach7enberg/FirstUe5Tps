@@ -67,7 +67,7 @@ void UTPSHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, co
 
 	// 现在生命值减少 所以是true,所以广播通知绑定了该委托的回调函数进行调用
 	OnHealthChanged.Broadcast(Health, true);
-	UE_LOG(MyUTPSHealthComponentLog, Error, TEXT("Hurted"));
+	// UE_LOG(MyUTPSHealthComponentLog, Error, TEXT("Hurted"));
 	// 处理是否自动回血	
 	NeedHeal.Broadcast();
 

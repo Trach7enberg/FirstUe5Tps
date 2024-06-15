@@ -33,6 +33,7 @@ UTPSWeaponLogicComponent::UTPSWeaponLogicComponent()
 void UTPSWeaponLogicComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	// 绑定 当切枪时又换弹的委托 调用的回调函数
 	OnSwitchWhenChangeMagz.AddUObject(this, &UTPSWeaponLogicComponent::ResetReloadState);
 
 	InitWeaponData();
@@ -97,7 +98,7 @@ bool UTPSWeaponLogicComponent::GetWeaponAmmo(FAmmoData &AmmoData) const
 bool UTPSWeaponLogicComponent::CanFire()
 {
 
-	// 当角色切换武器、换弹中、都不能开枪 //TODO 冲刺时、死亡时不能开枪
+	// 当角色切换武器、换弹中、都不能开枪 //TODO 冲刺时不能开枪
 	if (!CurrentWeapon || !CanSwitchWeapon() || IsReloading()) { return false; }
 
 	return true;
@@ -116,6 +117,12 @@ bool UTPSWeaponLogicComponent::IsFullAmmo() const
 	if (!CurrentWeapon) { return false; }
 
 	return CurrentWeapon->IsFullAmmo();
+}
+
+bool UTPSWeaponLogicComponent::IsEmptyAmmo() const
+{
+	if (!CurrentWeapon) { return false; }
+	return CurrentWeapon->IsEmptyAmmo();
 }
 
 bool UTPSWeaponLogicComponent::IsUnderFire() const
@@ -189,7 +196,14 @@ void UTPSWeaponLogicComponent::AttachWeaponToSocket(ATPSBaseWeapon *Weapon, USce
 void UTPSWeaponLogicComponent::EquipWeapon(int32 WeaponIndex)
 {
 	ACharacter *Character = GetCharacter(GetOwner());
-	if (!Character || WeaponIndex < 0 || WeaponIndex >= Weapons.Num()) { return; }
+
+	// 当前武器等于要切换的武器也是不能切换的
+	if (!Character || WeaponIndex < 0 || WeaponIndex >= Weapons.Num() || CurrentWeapon == Weapons[WeaponIndex])
+	{
+		return;
+	}
+
+	PlayAnimMontage(EquipAnimMontage);
 
 	// 手中存在武器,需要放到背上
 	if (CurrentWeapon) { AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), WeaponArmorySocketName); }
@@ -222,7 +236,6 @@ void UTPSWeaponLogicComponent::SwitchWeapon()
 	CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
 
 
-	PlayAnimMontage(EquipAnimMontage);
 	EquipWeapon(CurrentWeaponIndex);
 }
 

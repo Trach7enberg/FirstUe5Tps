@@ -24,8 +24,13 @@ void UTPSFireService::TickNode(UBehaviorTreeComponent &OwnerComp, uint8 *NodeMem
 		return;
 	}
 
-	if (const auto HasTarget = BlackBoard->GetValueAsObject(EnemyActorKey.SelectedKeyName)) { WeaponLogicComp->Fire(); }
+	// 如果通过黑板键选择器获得到的值不为null
+	if (const auto HasTarget = BlackBoard->GetValueAsObject(EnemyActorKey.SelectedKeyName))
+	{
+		WeaponLogicComp->Fire(); 
+	}
 	else { WeaponLogicComp->StopFire(); }
+
 
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 }

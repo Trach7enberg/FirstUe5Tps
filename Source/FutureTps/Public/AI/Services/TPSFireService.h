@@ -18,7 +18,7 @@ public:
 protected:
 	virtual void TickNode(UBehaviorTreeComponent &OwnerComp, uint8 *NodeMemory, float DeltaSeconds) override;
 
-	// 开火的目标
+	// 开火的目标,黑板上的键值对
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=AI)
 	FBlackboardKeySelector EnemyActorKey;
 };

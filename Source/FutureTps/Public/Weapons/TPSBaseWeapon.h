@@ -33,6 +33,16 @@ public:
 	/// @return 满弹药返回true
 	bool IsFullAmmo() const;
 
+	/// 当前的子弹和弹匣是否打空
+	/// @return 
+	bool IsEmptyAmmo() const;
+
+	// 子弹是否打空
+	bool IsBulletEmpty() const;
+	// 弹匣是否空了
+	bool IsMagzEmpty() const;
+	
+
 	// TODO 修复自动射击模式下半自动射击不灵敏问题 (实际是射速间隔(FireRate)导致的问题)
 	FORCEINLINE bool IsUnderFire() const { return BIsUnderFire; }
 
@@ -115,12 +125,6 @@ protected:
 
 	// 减少子弹
 	void DecreaseBullet();
-
-
-	// 子弹是否打空
-	bool IsBulletEmpty() const;
-	// 弹匣是否空了
-	bool IsMagzEmpty() const;
 
 	// 更换弹匣
 	void ChangeMagz();

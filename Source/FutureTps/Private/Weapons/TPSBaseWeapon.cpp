@@ -173,6 +173,8 @@ bool ATPSBaseWeapon::IsFullAmmo() const
 	return CurrentAmmo.Bullets == DefaultAmmo.Bullets && CurrentAmmo.Magazines == DefaultAmmo.Magazines;
 }
 
+bool ATPSBaseWeapon::IsEmptyAmmo() const { return IsBulletEmpty() && IsMagzEmpty(); }
+
 bool ATPSBaseWeapon::IsBulletEmpty() const { return CurrentAmmo.Bullets == 0; }
 
 bool ATPSBaseWeapon::IsMagzEmpty() const { return CurrentAmmo.Magazines == 0; }

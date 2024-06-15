@@ -16,7 +16,7 @@ class FUTURETPS_API ATPSAICharacter : public ATPSBaseCharacter
 	GENERATED_BODY()
 
 public:
-	// 调用父类构造器,(父类构造器通过这种构造器重写了角色移动组件)
+	// 调用父类构造器,(父类构造器通过这种构造器重写了角色移动组件,这里我们重写父类的武器逻辑组件)
 	ATPSAICharacter(const FObjectInitializer &ObjectInitializer);
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category=AI)

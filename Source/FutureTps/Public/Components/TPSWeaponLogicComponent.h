@@ -20,10 +20,10 @@ class FUTURETPS_API UTPSWeaponLogicComponent : public UActorComponent
 
 public:
 	UTPSWeaponLogicComponent();
-	void Fire();
+	virtual void Fire();
 	// 停止开火,注意有定时器的子类 死亡时还在开火的话,需要清除定时器
 	void StopFire();
-	void SwitchWeapon();
+	virtual void SwitchWeapon();
 
 	void Reload();
 
@@ -41,12 +41,29 @@ public:
 	/// @return 在换弹中返回true,否则返回false
 	bool IsReloading() const;
 
+	/// 当前武器的子弹和弹匣是否全满
+	/// @return 
 	bool IsFullAmmo() const;
+
+	/// 当前武器的子弹和弹匣是否打空
+	/// @return 
+	bool IsEmptyAmmo() const;
 
 protected:
 	// 武器结构的实体数组,在蓝图里指定
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Weapon)
 	TArray<FWeaponData> WeaponData = {};
+
+	// 存储通过WeaponData已经Spawn了的武器的数组
+	UPROPERTY()
+	TArray<ATPSBaseWeapon *> Weapons = {};
+
+	// 当前指针武器数组里的索引
+	int32 CurrentWeaponIndex = 0;
+
+	// 指向当前武器的指针
+	UPROPERTY()
+	ATPSBaseWeapon *CurrentWeapon = nullptr;
 
 	// 拿在手中的socket点位置
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Weapon)
@@ -61,27 +78,35 @@ protected:
 	UAnimMontage *EquipAnimMontage;
 
 
+	/// 是否能开火
+	/// @return 能开火返回true
+	bool CanFire();
+
+	/// 是否在开火中
+	/// @return 是则为true
+	bool IsUnderFire() const;
+
+	/// 是否能切换武器
+	/// @return 能切换武器返回true
+	bool CanSwitchWeapon() const;
+
+	// 装备武器
+	void EquipWeapon(int32 WeaponIndex);
+
+
 	virtual void BeginPlay() override;
 
 	// 结束当前类的play时,销毁通过实体数组生成的(指针武器数组里的)所有武器
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	// 当换弹时又切枪时就会发出广播的委托
+	FOnSwitchWhenChangeMagz OnSwitchWhenChangeMagz;
+
 private:
-	// 存储通过WeaponData已经Spawn了的武器的数组
-	UPROPERTY()
-	TArray<ATPSBaseWeapon *> Weapons = {};
-
-	// 指向当前武器的指针
-	UPROPERTY()
-	ATPSBaseWeapon *CurrentWeapon = nullptr;
-
 	// 当前的武器换弹动画
 	UPROPERTY()
 	UAnimMontage *CurrentReloadAnimMontage = nullptr;
 
-
-	// 当前指针武器数组里的索引
-	int32 CurrentWeaponIndex = 0;
 
 	// 切换武器动画开始时的flag,初始为false
 	bool BIsBeginWeaponSwitching = false;
@@ -95,26 +120,15 @@ private:
 	// 完成换子弹时候的动画Notify flag,初始为true
 	bool BisCompleteWeaponReloading = true;
 
-	/// 是否能开火
-	/// @return 能开火返回true
-	bool CanFire();
 
 	/// 是否能换弹
 	/// @return 能换弹返回true
 	bool CanReload() const;
 
 
-	bool IsUnderFire() const;
-
 	// 重置换弹过程(通知)的标记,因为当换弹时又切枪会导致不能再次换弹
 	void ResetReloadState();
 
-	/// 是否能切换武器
-	/// @return 能切换武器返回true
-	bool CanSwitchWeapon() const;
-
-	// 装备武器
-	void EquipWeapon(int32 WeaponIndex);
 
 	/// 获取当前组件类的Owner 
 	/// @param Owner 当前组件的Owner
@@ -141,10 +155,6 @@ private:
 
 	void OnReloadBegin(USkeletalMeshComponent *SkeletalMeshComponent);
 	void OnReloadFinished(USkeletalMeshComponent *SkeletalMeshComponent);
-
-
-	// 当换弹时又切枪时就会发出广播的委托
-	FOnSwitchWhenChangeMagz OnSwitchWhenChangeMagz;
 
 
 };
