@@ -63,14 +63,14 @@ void ATPSProjectile::OnProjectileHit(UPrimitiveComponent *HitComponent, AActor *
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Hit")));
 
 	// segments是球体的片段数，越大就越像圆
-	// DrawDebugSphere(GetWorld(), Hit.ImpactPoint, DamageRadius, 20, FColor::Purple, false, 3.f);
+	DrawDebugSphere(GetWorld(), Hit.ImpactPoint, DamageRadius, 20, FColor::Purple, false, 3.f);
 
 
 	// BIsDoFullDamage为true时,角色不管在圆球的哪一个点上都受到完全的伤害,为false时,根据角色离圆心点的距离进行插值越近圆心伤害越接近baseDamage
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), DamageValue, GetActorLocation(), DamageRadius, nullptr,
 	                                    {GetOwner(),},
 	                                    this, GetPlayerController(), BIsDoFullDamage);
-
+	
 	ProjectileMovementComponent->StopMovementImmediately();
 
 	// 播放特效

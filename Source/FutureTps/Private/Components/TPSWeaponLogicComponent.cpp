@@ -140,7 +140,7 @@ void UTPSWeaponLogicComponent::ResetReloadState()
 
 bool UTPSWeaponLogicComponent::CanSwitchWeapon() const
 {
-	return !BIsBeginWeaponSwitching && BIsCompleteWeaponSwitching;
+	return !BIsBeginWeaponSwitching && BIsCompleteWeaponSwitching ;
 }
 
 ACharacter *UTPSWeaponLogicComponent::GetCharacter(AActor *Owner) { return Cast<ACharacter>(Owner); }

@@ -20,4 +20,5 @@ ATPSAICharacter::ATPSAICharacter(const FObjectInitializer &ObjectInitializer):
 		GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		GetCharacterMovement()->RotationRate = FRotator(0, 0, 200.0f);
 	}
+	
 }

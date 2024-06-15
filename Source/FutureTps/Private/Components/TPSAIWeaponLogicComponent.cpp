@@ -29,7 +29,7 @@ void UTPSAIWeaponLogicComponent::SwitchWeapon()
 	if (IsReloading()) { OnSwitchWhenChangeMagz.Broadcast(); }
 
 	int32 Index;
-	// 切换武器时 找有子弹的武器切换 TODO 当武器全没有子弹时 不切枪或者切刀
+	// 切换武器时 遍历所有武器找有子弹的武器切换 TODO 当武器全没有子弹时 不切枪或者切刀
 	for (Index = (CurrentWeaponIndex + 1) % Weapons.Num();
 	     Index != CurrentWeaponIndex;
 	     Index = (Index + 1) % Weapons.Num()) { if (!Weapons[Index]->IsEmptyAmmo()) { break; } }
@@ -37,6 +37,5 @@ void UTPSAIWeaponLogicComponent::SwitchWeapon()
 	// 不等于当前武器才能换武器,否则退出,不然进入死循环
 	if (Index != CurrentWeaponIndex) { CurrentWeaponIndex = Index; }
 
-	UE_LOG(MyUTPSAIWeaponLogicComponentLog, Error, TEXT("weapon num: %d"), CurrentWeaponIndex);
 	EquipWeapon(CurrentWeaponIndex);
 }

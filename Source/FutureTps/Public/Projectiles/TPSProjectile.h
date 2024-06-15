@@ -51,8 +51,9 @@ protected:
 	float DamageRadius = 200.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Weapon)
-	float DamageValue = 50.0f;
+	float DamageValue = 80.0f;
 
+	// 是否设置粒子炮弹的伤害不受半径影响,打到哪里都是全伤
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Weapon)
 	bool BIsDoFullDamage = false;
 
