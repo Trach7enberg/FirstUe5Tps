@@ -94,6 +94,12 @@ bool UTPSWeaponLogicComponent::GetWeaponAmmo(FAmmoData &AmmoData) const
 	return true;
 }
 
+float UTPSWeaponLogicComponent::GetCurrentWeaponAmmoLeftPercent() const
+{
+	if (!CurrentWeapon) { return false; }
+	return CurrentWeapon->GetCurrentWeaponAmmoLeftPercent();
+}
+
 
 bool UTPSWeaponLogicComponent::CanFire()
 {
@@ -140,7 +146,7 @@ void UTPSWeaponLogicComponent::ResetReloadState()
 
 bool UTPSWeaponLogicComponent::CanSwitchWeapon() const
 {
-	return !BIsBeginWeaponSwitching && BIsCompleteWeaponSwitching ;
+	return !BIsBeginWeaponSwitching && BIsCompleteWeaponSwitching;
 }
 
 ACharacter *UTPSWeaponLogicComponent::GetCharacter(AActor *Owner) { return Cast<ACharacter>(Owner); }

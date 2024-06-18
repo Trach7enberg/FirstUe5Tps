@@ -165,7 +165,7 @@ void ATPSBaseWeapon::Resupply(float ResupplyPercent)
 		                                   DefaultAmmo.Bullets);
 	}
 
-	UE_LOG(MyATPSBaseWeaponLog, Error, TEXT("[ResupplyMagz]TotalBullets: %d , Magz: %d "), TotalBullets, Magz);
+	// UE_LOG(MyATPSBaseWeaponLog, Error, TEXT("[ResupplyMagz]TotalBullets: %d , Magz: %d "), TotalBullets, Magz);
 }
 
 bool ATPSBaseWeapon::IsFullAmmo() const
@@ -178,6 +178,12 @@ bool ATPSBaseWeapon::IsEmptyAmmo() const { return IsBulletEmpty() && IsMagzEmpty
 bool ATPSBaseWeapon::IsBulletEmpty() const { return CurrentAmmo.Bullets == 0; }
 
 bool ATPSBaseWeapon::IsMagzEmpty() const { return CurrentAmmo.Magazines == 0; }
+
+float ATPSBaseWeapon::GetCurrentWeaponAmmoLeftPercent() const
+{
+	const int32 TotalBullets = DefaultAmmo.Magazines * DefaultAmmo.Bullets + DefaultAmmo.Bullets;
+	return ((CurrentAmmo.Magazines * DefaultAmmo.Bullets) + CurrentAmmo.Bullets) * 1.0f / TotalBullets;
+}
 
 void ATPSBaseWeapon::DebugLogAmmo() const
 {

@@ -24,6 +24,9 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	/// 判断当前拾取物是否能被拾取
+	virtual bool CanBeTaken();
+
 	UPROPERTY(VisibleAnywhere, Category=Pickup)
 	USphereComponent *CollisionComponent;
 

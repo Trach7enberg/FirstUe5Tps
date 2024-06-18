@@ -21,6 +21,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=PickUp, meta=(ClampMin=0.5, ClampMax=1.0))
 	float ResupplyPercent = 0.1f;
 
-	//TODO 根据武器类型来分别创建弹药拾取类,只能补给指定武器
+	//TODO 判断角色有几把枪,如果当前是满子弹的则不补充,优先补充没有子弹的
 
 };

@@ -238,3 +238,16 @@ void ATPSBaseCharacter::OnGroundLanded(const FHitResult &Hit)
 
 	this->TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
 }
+
+void ATPSBaseCharacter::SetCharacterColor(const FLinearColor &Color)
+{
+	// 在运行时动态创建并设置一个材质实例，这个函数通常用于在游戏运行时改变物体的材质属性，例如颜色、纹理等
+	const auto MaterialInst = GetMesh()->CreateAndSetMaterialInstanceDynamic(0);
+
+	if (!MaterialInst)
+	{
+		return;
+	}
+	// 设置人物材质球里一个名字叫PaintColor的颜色
+	MaterialInst->SetVectorParameterValue(PaintColor,Color);
+}

@@ -51,6 +51,10 @@ public:
 
 	FAmmoData GetCurrentAmmo() const { return CurrentAmmo; }
 
+	/// 当前武器总弹药(弹匣+子弹)还剩多少百分比
+	/// @return 
+	float GetCurrentWeaponAmmoLeftPercent() const ;
+
 protected:
 	// 武器模型, 需要在蓝图里手动初始化
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")

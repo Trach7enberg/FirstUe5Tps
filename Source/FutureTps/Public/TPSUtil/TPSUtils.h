@@ -1,4 +1,5 @@
 #pragma once
+#include "PlayerStates/TPSBasePlayerState.h"
 
 DEFINE_LOG_CATEGORY_STATIC(MyFTPSUtilsLog, All, All);
 
@@ -38,5 +39,19 @@ public:
 			return nullptr;
 		}
 		return PlayerActor->GetComponentByClass<ComponentType>();
+	}
+
+	/// 判断两个控制器是否是敌人
+	/// @param Controller1 控制器1
+	/// @param Controller2 控制器2
+	/// @return 是则返回true,否则返回false
+	static bool AreEnemies(const AController *Controller1, const AController *Controller2)
+	{
+		if (!Controller1 || !Controller2 || Controller1 == Controller2) { return false; }
+
+		const auto PlayerState1 = Controller1->GetPlayerState<ATPSBasePlayerState>();
+		const auto PlayerState2 = Controller2->GetPlayerState<ATPSBasePlayerState>();
+
+		return PlayerState1 && PlayerState2 && PlayerState1->GetTeamID() != PlayerState2->GetTeamID();
 	}
 };

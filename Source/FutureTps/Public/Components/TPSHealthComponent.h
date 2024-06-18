@@ -35,10 +35,12 @@ public:
 	bool IsDead() const { return FMath::IsNearlyZero(Health); }
 
 
-	// 获取声明百分比
+	// 获取生命百分比值
 	UFUNCTION(BlueprintCallable, Category=Heal)
 	float GetHealthPercent() const { return Health / MaxHealth; }
 
+	///  判断当前actor是否满血
+	/// @return 是则返回true,否则false
 	UFUNCTION(BlueprintCallable, Category=Heal)
 	float IsFullHealth() const { return !IsDead() && FMath::IsNearlyEqual(Health, MaxHealth); }
 

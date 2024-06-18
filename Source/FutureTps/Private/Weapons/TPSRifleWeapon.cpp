@@ -34,7 +34,7 @@ void ATPSRifleWeapon::SemiFire()
 		// 防止角色死亡后左键没有松手,还会继续开枪,需要清除定时器
 		if (IsBulletEmpty() || GetOwner()->GetLifeSpan() != 0.0f)
 		{
-			UE_LOG(MyATPSRifleWeaponLog, Error, TEXT("Empty>?"));
+			// UE_LOG(MyATPSRifleWeaponLog, Error, TEXT("Empty>?"));
 			StopFire();
 			return;
 		}
@@ -46,7 +46,7 @@ void ATPSRifleWeapon::StopFire()
 {
 	if (!GetWorld()) { return; }
 	GetWorld()->GetTimerManager().ClearTimer(AutoFireTimer);
-	UE_LOG(MyATPSRifleWeaponLog, Error, TEXT("StopFire"));
+	// UE_LOG(MyATPSRifleWeaponLog, Error, TEXT("StopFire"));
 	SetRifleMuzzleFXVisiblity(false);
 	BIsUnderFire = false;
 }
@@ -71,8 +71,8 @@ void ATPSRifleWeapon::MakeShot()
 {
 
 	if (!GetWorld() || IsBulletEmpty()) { return; }
-	UE_LOG(MyATPSRifleWeaponLog, Error, TEXT("Fire"));
-	BIsUnderFire = true;
+	// UE_LOG(MyATPSRifleWeaponLog, Error, TEXT("Fire"));
+	BIsUnderFire = true;	
 	SetRifleMuzzleFXVisiblity(true);
 
 

@@ -37,6 +37,10 @@ public:
 	// 获取武器弹药结构信息
 	bool GetWeaponAmmo(FAmmoData &AmmoData) const;
 
+	/// 当前武器总弹药(弹匣+子弹)还剩多少百分比
+	/// @return 
+	float  GetCurrentWeaponAmmoLeftPercent() const;
+	
 	/// 判断是否在换弹匣
 	/// @return 在换弹中返回true,否则返回false
 	bool IsReloading() const;

@@ -2,6 +2,9 @@
 
 #pragma once
 
+/**
+ * 存储着游戏中的所有自定义数据结构
+ */
 #include "CoreType.generated.h"
 
 // 武器逻辑组件的委托
@@ -66,7 +69,7 @@ DECLARE_MULTICAST_DELEGATE(FOnDeath);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnHealthChanged, float Health, bool BIsDecreaseHealth);
 DECLARE_MULTICAST_DELEGATE(FNeedHeal);
 
-/// VFS
+/// VFS 特效数据结构
 class UNiagaraSystem;
 
 /// 贴花数据结构
@@ -108,4 +111,34 @@ struct FImpactData
 	FDecalData DecalData;
 };
 
-/// VFS
+/// 游戏模式的数据结构,存储着游戏模式的配置信息
+USTRUCT(Blueprintable)
+struct FGameData
+{
+	GENERATED_BODY()
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game, meta=(ClampMin=1, ClampMax=128))
+	int32 PlayersNum = 2; // 游戏玩家的数量
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game, meta=(ClampMin=1, ClampMax=16))
+	int32 RoundsCount = 2; // 回合数
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game, meta=(ClampMin=5, ClampMax=300))
+	float RoundTime = 3; // 回合时间,单位为秒
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game)
+	FLinearColor DefaultTeamColor = FLinearColor::Red; // 默认队伍颜色
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game)
+	TArray<FLinearColor> TeamColors{
+		FLinearColor(0.847458f, 0.231807f, 0.010489f, 0.0f),
+		FLinearColor::Green,
+		FLinearColor::Blue,
+	}; // 队伍颜色的数组,默认有3种颜色
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game)
+	TArray<int32> TeamIDs{0, 1 , }; // 队伍ID的数组,默认只有2个队伍
+};

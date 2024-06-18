@@ -36,6 +36,12 @@ void ATPSBasePickUp::Tick(float DeltaTime)
 	AddActorLocalRotation(FRotator(0, RotationYaw, 0));
 }
 
+bool ATPSBasePickUp::CanBeTaken()
+{
+	// 重生计时器启用说明当前拾取物不能被拾取
+	return !GetWorld()->GetTimerManager().IsTimerActive(RespawnTimer);
+}
+
 void ATPSBasePickUp::Respawn()
 {
 	InitPickUpRotation();
@@ -74,7 +80,7 @@ void ATPSBasePickUp::NotifyActorBeginOverlap(AActor *OtherActor)
 
 	if (CanPickup(OtherActor))
 	{
-		UE_LOG(MyATPSBasePickUpLog, Error, TEXT("IN"));
+		// UE_LOG(MyATPSBasePickUpLog, Error, TEXT("IN"));
 		Pickup(OtherActor);
 	}
 

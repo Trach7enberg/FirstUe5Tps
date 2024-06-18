@@ -30,6 +30,8 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
+	/// 设置角色(外观)的颜色
+	virtual void SetCharacterColor(const FLinearColor &Color);
 
 	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 
@@ -99,6 +101,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category=Damage)
 	float LifeSpanOnDeath = 5.f;
 
+	/// 当前人物的材质颜色
+	UPROPERTY(EditDefaultsOnly, Category=Material)
+	FName PaintColor = "Paint Color";
+
+	// 生命组件委托的回调函数
+	UFUNCTION()
+	virtual void OnDeath();
+
 private:
 	void MoveForward(float value);
 	void MoveRight(float value);
@@ -108,9 +118,6 @@ private:
 	void RushEnd();
 	void MyJump();
 
-	// 生命组件委托的回调函数
-	UFUNCTION()
-	void OnDeath();
 
 	/// 生命组件当生命值变化时候委托的回调函数
 	/// @param Health 变化的生命值

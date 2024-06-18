@@ -8,7 +8,8 @@
 
 /**
  * 行为树中的AIService类 
- * 当前类的作用是找到敌人的位置,将它的值设置到黑板上
+ * 当前类的作用是找到敌人的位置(通过AI身上的感知组件在某个半径内寻找)
+ * 并将找到的位置的值设置到黑板上
  */
 UCLASS()
 class FUTURETPS_API UTPSFindEnemyService : public UBTService
