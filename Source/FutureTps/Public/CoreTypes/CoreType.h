@@ -117,28 +117,39 @@ struct FGameData
 {
 	GENERATED_BODY()
 
-
+	// 游戏玩家的数量
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game, meta=(ClampMin=1, ClampMax=128))
-	int32 PlayersNum = 2; // 游戏玩家的数量
+	int32 PlayersNum = 2;
 
 
+	// 总回合数
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game, meta=(ClampMin=1, ClampMax=16))
-	int32 RoundsCount = 2; // 回合数
+	int32 RoundsCount = 2;
 
 
+	// 每回合时间,单位为秒
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game, meta=(ClampMin=5, ClampMax=300))
-	float RoundTime = 3; // 回合时间,单位为秒
+	float RoundTime = 3;
 
+	// 重生时间
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game, meta=(ClampMin=2, ClampMax=60))
+	float RespawnTime = 5;
+	
+	// 默认队伍颜色
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game)
-	FLinearColor DefaultTeamColor = FLinearColor::Red; // 默认队伍颜色
+	FLinearColor DefaultTeamColor = FLinearColor::Red;
 
+	// 队伍颜色的数组,默认有3种颜色
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game)
 	TArray<FLinearColor> TeamColors{
 		FLinearColor(0.847458f, 0.231807f, 0.010489f, 0.0f),
 		FLinearColor::Green,
 		FLinearColor::Blue,
-	}; // 队伍颜色的数组,默认有3种颜色
+	};
 
+	// 队伍ID的数组,默认只有2个队伍
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game)
-	TArray<int32> TeamIDs{0, 1 , }; // 队伍ID的数组,默认只有2个队伍
+	TArray<int32> TeamIDs{0, 1,};
+
+	
 };

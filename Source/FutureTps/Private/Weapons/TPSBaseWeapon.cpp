@@ -28,13 +28,13 @@ void ATPSBaseWeapon::BeginPlay()
 	CurrentAmmo = DefaultAmmo;
 }
 
-APlayerController *ATPSBaseWeapon::GetPlayerController() const
+AController *ATPSBaseWeapon::GetController() const
 {
 
-	ACharacter *Player = Cast<ACharacter>(GetOwner());
-	if (!Player) { return nullptr; }
+	const auto Pawn = Cast<APawn>(GetOwner());
+	if (!Pawn) { return nullptr; }
 
-	return Player->GetController<APlayerController>();
+	return Pawn->GetController();
 }
 
 bool ATPSBaseWeapon::GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRotation) const
@@ -47,7 +47,7 @@ bool ATPSBaseWeapon::GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRot
 	const auto TPSCharacter = Cast<ACharacter>(GetOwner());
 	if (TPSCharacter->IsPlayerControlled())
 	{
-		APlayerController *PlayerController = GetPlayerController();
+		const AController *PlayerController = GetController();
 
 		// 获取摄像机视点,用来纠正射击轨道 (即子弹是从枪口射到摄像机的准星中间)
 		if (!PlayerController) { return false; }

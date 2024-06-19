@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "TPSAIController.generated.h"
 
+class UTPSRespawnComponent;
 class UTPSAIPerceptionComponent;
 /**
  *  AI的控制器
@@ -29,6 +30,10 @@ protected:
 	// AI感知组件
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=Components)
 	UTPSAIPerceptionComponent *TPSAIPerceptionComponent;
+
+	// 重生组件
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=Components)
+	UTPSRespawnComponent* RespawnComponent;
 
 	// 黑板上某个键的名字,通过这个名字获取对应的黑板值
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=AI)

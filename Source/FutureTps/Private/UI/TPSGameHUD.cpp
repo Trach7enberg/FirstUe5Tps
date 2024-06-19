@@ -22,6 +22,7 @@ void ATPSGameHUD::BeginPlay()
 		UserWidget->AddToViewport();
 	}
 
+
 }
 
 void ATPSGameHUD::DrawCrossHair()

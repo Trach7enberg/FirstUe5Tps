@@ -3,6 +3,8 @@
 
 #include "Components/TPSHealthComponent.h"
 
+#include "GameMode/TPSGameModeBase.h"
+
 
 DEFINE_LOG_CATEGORY_STATIC(MyUTPSHealthComponentLog, All, All)
 
@@ -73,8 +75,13 @@ void UTPSHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, co
 
 	OscillationCamera();
 
+	// 扣血之后判断是否死亡
 	if (IsDead())
 	{
+		// InstigatedBy是引发伤害的Controller
+		// 调用KillPlayer函数记录相应的PlayerState击杀死亡信息
+		KillPlayer(InstigatedBy);
+
 		// 死亡则广播,所有接到通知并且已经绑定回调函数的将会调用回调函数处理
 		OnDeath.Broadcast();
 	}
@@ -94,4 +101,17 @@ void UTPSHealthComponent::OscillationCamera() const
 	if (!Controller || !Controller->PlayerCameraManager) { return; }
 
 	Controller->PlayerCameraManager->StartCameraShake(CameraShake);
+}
+
+void UTPSHealthComponent::KillPlayer(AController *Killer)
+{
+	if (!GetWorld()) { return; }
+
+	const auto GameMode = Cast<ATPSGameModeBase>(GetWorld()->GetAuthGameMode());
+	if (!GameMode) { return; }
+
+	const auto VictimPlayer = Cast<APawn>(GetOwner());
+	const auto VictimController = VictimPlayer ? VictimPlayer->GetController() : nullptr;
+
+	GameMode->KillPlayer(Killer, VictimController);
 }

@@ -94,4 +94,6 @@ private:
 
 	/// 播放抖动摄像机
 	void OscillationCamera() const;
+
+	void KillPlayer(AController *Killer);
 };

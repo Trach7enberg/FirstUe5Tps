@@ -96,9 +96,9 @@ void ATPSRifleWeapon::MakeShot()
 
 		// DrawDebugSphere(GetWorld(), LineTraceHitResult.ImpactPoint, 5.f, 5, FColor::Red, false, 3.f, 0, 3.f);
 		// 打印被击中的骨骼名字
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-		                                 FString::Printf(TEXT("Hit Bone: %s"), *LineTraceHitResult.BoneName.ToString()),
-		                                 false, FVector2D(2, 2));
+		// GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
+		//                                  FString::Printf(TEXT("Hit Bone: %s"), *LineTraceHitResult.BoneName.ToString()),
+		//                                  false, FVector2D(2, 2));
 
 
 		MakeDamage(LineTraceHitResult);
@@ -120,7 +120,7 @@ void ATPSRifleWeapon::MakeDamage(const FHitResult &HitResult)
 	if (!HitResult.GetActor()) { return; }
 	if (ATPSBaseCharacter *AtpsBaseCharacter = Cast<ATPSBaseCharacter>(HitResult.GetActor()))
 	{
-		AtpsBaseCharacter->TakeDamage(WeaponDamage, FDamageEvent{}, GetPlayerController(), this);
+		AtpsBaseCharacter->TakeDamage(WeaponDamage, FDamageEvent{}, GetController(), this);
 	}
 }
 

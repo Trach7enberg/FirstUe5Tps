@@ -64,6 +64,7 @@ FText UTPSPlayerHUDWidget::GetCurrentAmmoText() const
 	return FText::FromString(String + "/" + FString::FromInt(AmmoData.Magazines));
 }
 
+
 bool UTPSPlayerHUDWidget::IsPlayerAlive() const
 {
 	const UTPSHealthComponent *HealthComponent = FTPSUtils::GetComponentByCurrentPlayer<UTPSHealthComponent>(
@@ -103,8 +104,7 @@ ESlateVisibility UTPSPlayerHUDWidget::IsReloading() const
 	return ESlateVisibility::Visible;
 }
 
-void UTPSPlayerHUDWidget::HealthChanged(float Health,bool BIsDecreaseHealth)
+void UTPSPlayerHUDWidget::HealthChanged(float Health, bool BIsDecreaseHealth)
 {
-	OnHealthChanged(Health,BIsDecreaseHealth);
-	
+	OnHealthChanged(Health, BIsDecreaseHealth);
 }

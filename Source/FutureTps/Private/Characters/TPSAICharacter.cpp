@@ -14,7 +14,7 @@ ATPSAICharacter::ATPSAICharacter(const FObjectInitializer &ObjectInitializer):
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UTPSAIWeaponLogicComponent>("WeaponLogicComponent"))
 {
 	AutoPossessAI = EAutoPossessAI::Disabled;
-	AIControllerClass = ATPSAICharacter::StaticClass();
+	AIControllerClass = ATPSAICharacter::StaticClass(); 
 	
 	bUseControllerRotationYaw = false;
 	if (GetCharacterMovement())

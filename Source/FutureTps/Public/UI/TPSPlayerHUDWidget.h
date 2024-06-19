@@ -8,8 +8,9 @@
 
 struct FAmmoData;
 struct FWeaponUIData;
+
 /**
- * 
+ * 玩家UI类,玩家的UIWidget蓝图继承自这个类 
  */
 UCLASS()
 class FUTURETPS_API UTPSPlayerHUDWidget : public UUserWidget
@@ -63,6 +64,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category=UI)
 	void OnHealthChanged(float Health, bool BIsDecreaseHealth);
 
+
+	
 private:
 	/// 
 	/// @return 
@@ -73,7 +76,8 @@ private:
 	/// @return 
 	UFUNCTION(BlueprintCallable, Category=UI)
 	bool IsPlayerSpectating() const;
-
+	
+	
 	/// 当生命值变化时生命组件回调的函数
 	/// @param health 
 	/// @param BIsDecreaseHealth 

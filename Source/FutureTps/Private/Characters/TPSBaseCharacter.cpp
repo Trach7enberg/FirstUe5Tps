@@ -67,6 +67,7 @@ ATPSBaseCharacter::ATPSBaseCharacter(const FObjectInitializer &ObjectInitializer
 	MoveForwardValue = 0;
 	MoveRightValue = 0;
 
+
 	// 生命值文本 控制人不可见
 	HealthTextComponent->SetOwnerNoSee(true);
 	HealthTextComponent->SetRelativeLocation(FVector(0, 24, 85));
@@ -84,12 +85,13 @@ ATPSBaseCharacter::ATPSBaseCharacter(const FObjectInitializer &ObjectInitializer
 	// 绑定当生命值更新时 触发的回调函数
 	HealthComponent->OnHealthChanged.AddUObject(this, &ATPSBaseCharacter::OnHealthChanged);
 
-	//TODO 直接在这里初始化角色的碰撞矩阵设置,不用每次都到蓝图里调整
+	//直接在这里初始化角色的碰撞矩阵设置,不用每次都到蓝图里调整
 	GetMesh()->SetCollisionProfileName("MyPawn");
 
 	// InitMesh();
 	GetMesh()->SetRelativeLocation(FVector(0, -8, -85));
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
+
 }
 
 
@@ -100,6 +102,9 @@ void ATPSBaseCharacter::BeginPlay()
 	check(HealthTextComponent);
 	check(GetCharacterMovement());
 
+	InitCharacterName();
+	// 游戏开始手动显示血量
+	OnHealthChanged(HealthComponent->GetHealth(), false);
 
 	// 绑定落地时的委托回调函数
 	LandedDelegate.AddDynamic(this, &ATPSBaseCharacter::OnGroundLanded);
@@ -137,6 +142,9 @@ void ATPSBaseCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCo
 	// TODO 前滚轮切换上一把武器、后滚轮切换下一把武器
 	PlayerInputComponent->BindAction("SwitchWeapons", IE_Pressed, WeaponLogicComponent,
 	                                 &UTPSWeaponLogicComponent::SwitchWeapon);
+
+	
+
 }
 
 float ATPSBaseCharacter::GetMovementDirection() const
@@ -159,6 +167,7 @@ float ATPSBaseCharacter::GetMovementDirection() const
 	return (CrossProduct.IsZero()) ? AngleBetween : AngleBetween * sign;
 	// return AngleBetween * sign;
 }
+
 
 void ATPSBaseCharacter::MoveForward(float value)
 {
@@ -222,7 +231,7 @@ void ATPSBaseCharacter::OnHealthChanged(float Health, bool BIsDecreaseHealth)
 {
 
 	// 给字体渲染组件更新内容文字
-	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%0.f"), Health)));
+	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%s , %0.f"), *CharacterName, Health)));
 }
 
 void ATPSBaseCharacter::OnGroundLanded(const FHitResult &Hit)
@@ -244,10 +253,32 @@ void ATPSBaseCharacter::SetCharacterColor(const FLinearColor &Color)
 	// 在运行时动态创建并设置一个材质实例，这个函数通常用于在游戏运行时改变物体的材质属性，例如颜色、纹理等
 	const auto MaterialInst = GetMesh()->CreateAndSetMaterialInstanceDynamic(0);
 
-	if (!MaterialInst)
-	{
-		return;
-	}
+	if (!MaterialInst) { return; }
 	// 设置人物材质球里一个名字叫PaintColor的颜色
-	MaterialInst->SetVectorParameterValue(PaintColor,Color);
+	MaterialInst->SetVectorParameterValue(PaintColor, Color);
+}
+
+void ATPSBaseCharacter::InitCharacterName()
+{
+	if (!CharacterName.IsEmpty()) { return; }
+	FString Left;
+	FString Right;
+	FString Tag = "AI_";
+
+	if (GetName().Split("_", &Left, &Right))
+	{
+		if (Right.Split("_", &Left, &Right))
+		{
+			if (Left.Contains("Base")) { Tag = "Base_"; }
+			CharacterName = Tag + Right;
+		}
+	}
+
+	// UE_LOG(MyATPSBaseCharacterLog, Error, TEXT("Left:%s,Right:%s"), *Left, *Right);
+}
+
+FString ATPSBaseCharacter::GetCharacterName()
+{
+	InitCharacterName();
+	return CharacterName;
 }

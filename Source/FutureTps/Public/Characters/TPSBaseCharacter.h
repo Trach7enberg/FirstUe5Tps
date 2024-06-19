@@ -34,7 +34,7 @@ public:
 	virtual void SetCharacterColor(const FLinearColor &Color);
 
 	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
-
+	
 	// 是否在冲刺
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=Movement)
 	bool BIsRush;
@@ -61,6 +61,10 @@ public:
 	// 计算当前角度(动画机通过角度调整对应的动画),返回direction供混合动画输入使用
 	UFUNCTION(BlueprintCallable, Category=Movement)
 	float GetMovementDirection() const;
+
+	/// 获取当前角色的名字(GetName的简化版)
+	/// @return 角色的名字
+	FString GetCharacterName();
 
 protected:
 	// 初始化人物角色的mesh模型、动画等 (TODO 注意 发行打包时,不要调用此函数 会报错)
@@ -105,6 +109,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category=Material)
 	FName PaintColor = "Paint Color";
 
+	/// 角色的名字(GetName简化版)
+	UPROPERTY(EditDefaultsOnly, Category=Player)
+	FString CharacterName ;
+
 	// 生命组件委托的回调函数
 	UFUNCTION()
 	virtual void OnDeath();
@@ -118,8 +126,9 @@ private:
 	void RushEnd();
 	void MyJump();
 
+	
 
-	/// 生命组件当生命值变化时候委托的回调函数
+	/// 生命组件当生命值变化时候委托的回调函数,主要用于更新角色头顶的文本
 	/// @param Health 变化的生命值
 	/// @param BIsDecreaseHealth 当前生命值变化是降低还是增加 
 	UFUNCTION()
@@ -129,5 +138,7 @@ private:
 	UFUNCTION()
 	void OnGroundLanded(const FHitResult &Hit);
 
+	/// 初始化当前角色的名字
+	void InitCharacterName() ;
 
 };

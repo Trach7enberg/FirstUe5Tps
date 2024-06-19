@@ -28,6 +28,24 @@ public:
 	/// @return 一个UClass的APawn
 	virtual UClass *GetDefaultPawnClassForController_Implementation(AController *InController) override;
 
+	void KillPlayer(AController *Killer, AController *Victim);
+
+	/// 获取当前回合数
+	/// @return 
+	int32 GetCurrentRound() const { return CurrentRound; }
+
+	/// 当前回合倒计时
+	/// @return 
+	int32 GetRoundSecondsRemaining() const { return CurrentRoundCountDown; }
+
+	/// 获得当前最大回合数
+	/// @return 
+	int32 GetMaxRound() const { return MaxRound; }
+
+	/// 重生玩家(AI)(一般用于玩家死亡之后)
+	/// @param Controller 玩家(或AI)的控制器
+	void RespawnPlayer(AController * Controller);
+
 protected:
 	/// 通过AI的控制器生成AI和销毁AI
 	UPROPERTY(EditDefaultsOnly, Category=Game)
@@ -43,15 +61,18 @@ protected:
 
 private:
 	// 当前游戏回合
-	int32 CurrentRound = 1;
+	int32 CurrentRound = 0;
 
+	int32 MaxRound = 1;
+	
 	// 当前回合倒计时
-	int32 RoundCountDown = 0;
+	int32 CurrentRoundCountDown = 0;
 
 	// 回合计时器(每秒)
 	FTimerHandle GameRoundTimerHandle;
 
 	/// 计时器调用的函数
+	/// 计算/更新游戏回合的时间
 	void GameRoundTimerUpdate();
 
 	/// 生成AI
@@ -63,7 +84,7 @@ private:
 	/// 重置(重新生成)世界中的所有玩家,一般用于回合开始前
 	void ResetAllPlayer();
 
-	/// 重置(重新生成)单个玩家,一般用于回合开始前
+	/// 重置(重新生成)单个玩家,一般用于回合开始前或者玩家死亡后
 	void ResetPlayer(AController *Controller);
 
 
@@ -78,5 +99,12 @@ private:
 	/// 设置玩家的颜色
 	/// @param Controller 
 	void SetPlayerColor(const AController *Controller);
+
+	/// 开始执行重生玩家逻辑
+	/// @param Controller 玩家的控制器 
+	void StartRespawn(AController *Controller);
+	
+	/// 打印世界中所有控制器对应的PlayerState
+	void LogPlayerStates() const;
 
 };

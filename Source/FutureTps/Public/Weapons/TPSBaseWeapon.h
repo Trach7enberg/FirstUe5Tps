@@ -93,8 +93,10 @@ protected:
 
 
 	/// 从当前类的owner里获取controller
+	/// 注意AI是没有PlayerController的,只有AICotroller
+	/// 所以我们返回的是AController这个基类
 	/// @return 当前actor的拥有者(Owner)的character的controller类
-	APlayerController *GetPlayerController() const;
+	AController *GetController() const;
 
 	/// 获取玩家摄像机的中心视点坐标和旋转方向
 	/// @param ViewLocation 视点的坐标向量

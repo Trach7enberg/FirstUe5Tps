@@ -70,7 +70,7 @@ void ATPSProjectile::OnProjectileHit(UPrimitiveComponent *HitComponent, AActor *
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), DamageValue, GetActorLocation(), DamageRadius, nullptr,
 	                                    {GetOwner(),},
 	                                    this, GetPlayerController(), BIsDoFullDamage);
-	
+
 	ProjectileMovementComponent->StopMovementImmediately();
 
 	// 播放特效
@@ -85,8 +85,8 @@ void ATPSProjectile::SetShotDirection(const FVector &Direction) { ShotDirection 
 AController *ATPSProjectile::GetPlayerController() const
 {
 
-	ACharacter *Player = Cast<ACharacter>(GetOwner());
-	if (!Player) { return nullptr; }
+	const auto Pawn = Cast<APawn>(GetOwner());
+	if (!Pawn) { return nullptr; }
 
-	return Player->GetController<APlayerController>();
+	return Pawn->GetController();
 }

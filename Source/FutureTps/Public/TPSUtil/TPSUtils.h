@@ -16,7 +16,7 @@ public:
 		// 获取当前类的玩家Pawn
 		if (!PlayerPawn)
 		{
-			UE_LOG(MyFTPSUtilsLog, Error, TEXT("Cant be null!"))
+			// UE_LOG(MyFTPSUtilsLog, Error, TEXT("Cant be null!"))
 			return nullptr;
 		}
 
@@ -35,7 +35,7 @@ public:
 	{
 		if (!PlayerActor)
 		{
-			UE_LOG(MyFTPSUtilsLog, Error, TEXT("Cant be null!"))
+			// UE_LOG(MyFTPSUtilsLog, Error, TEXT("Cant be null!"))
 			return nullptr;
 		}
 		return PlayerActor->GetComponentByClass<ComponentType>();

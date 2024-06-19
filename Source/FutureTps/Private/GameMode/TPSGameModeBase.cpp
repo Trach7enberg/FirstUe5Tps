@@ -1,8 +1,11 @@
 #include "GameMode/TPSGameModeBase.h"
 
 #include "Characters/TPSBaseCharacter.h"
+#include "Components/TPSRespawnComponent.h"
 #include "PlayerStates/TPSBasePlayerState.h"
+#include "TPSUtil/TPSUtils.h"
 #include "UI/TPSGameHUD.h"
+#include "controllers/TPSAIController.h"
 #include "controllers/TPSPlayerController.h"
 
 DEFINE_LOG_CATEGORY_STATIC(MyATPSGameModeBaseLog, All, All);
@@ -13,13 +16,14 @@ ATPSGameModeBase::ATPSGameModeBase()
 	PlayerControllerClass = ATPSPlayerController::StaticClass();
 	HUDClass = ATPSGameHUD::StaticClass();
 	PlayerStateClass = ATPSBasePlayerState::StaticClass();
+
+
 }
 
 void ATPSGameModeBase::StartPlay()
 {
 	Super::StartPlay();
-	CurrentRound = 1;
-
+	MaxRound = GameData.RoundsCount;
 	SpawnBots();
 	InitAllPlayerState();
 	StartRound();
@@ -44,26 +48,26 @@ void ATPSGameModeBase::SpawnBots()
 		FActorSpawnParameters SpawnInfo;
 		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-		AAIController *AaiController = GetWorld()->SpawnActor<AAIController>(AIControllerClass, SpawnInfo);
+		const auto AiController = GetWorld()->SpawnActor<ATPSAIController>(AIControllerClass, SpawnInfo);
 
 		// 通过AI控制器生成AI
-		RestartPlayer(AaiController);
+		RestartPlayer(AiController);
 	}
 }
 
 void ATPSGameModeBase::StartRound()
 {
-	RoundCountDown = GameData.RoundTime;
+	CurrentRoundCountDown = GameData.RoundTime;
 	GetWorldTimerManager().SetTimer(GameRoundTimerHandle, this, &ATPSGameModeBase::GameRoundTimerUpdate, 1.0f, true);
 }
 
 
 void ATPSGameModeBase::GameRoundTimerUpdate()
 {
-	if (--RoundCountDown <= 0)
+	if (--CurrentRoundCountDown <= 0)
 	{
 		GetWorldTimerManager().ClearTimer(GameRoundTimerHandle);
-		if (CurrentRound + 1 <= GameData.RoundsCount)
+		if (CurrentRound + 1 <= MaxRound)
 		{
 			++CurrentRound;
 
@@ -107,11 +111,17 @@ void ATPSGameModeBase::InitAllPlayerState()
 		const auto Controller = It->Get();
 		if (!Controller) { continue; }
 
+		const auto Character = Cast<ATPSBaseCharacter>(Controller->GetCharacter());
+		if (!Character) { continue; }
+
 		const auto PlayerState = Controller->GetPlayerState<ATPSBasePlayerState>();
 		if (!PlayerState) { continue; }
 
 		PlayerState->SetTeamID(TeamID);
 		PlayerState->SetTeamColor(GetColorByTeamID(TeamID));
+		// 设置玩家的名字
+		PlayerState->SetPlayerName(Character->GetCharacterName());
+
 		SetPlayerColor(Controller);
 
 		// 有多少个团队取决于团队ID数组中有几个元素
@@ -139,4 +149,46 @@ void ATPSGameModeBase::SetPlayerColor(const AController *Controller)
 	if (!PlayerState) { return; }
 
 	BaseCharacter->SetCharacterColor(PlayerState->GetTeamColor());
+}
+
+
+void ATPSGameModeBase::KillPlayer(AController *Killer, AController *Victim)
+{
+	const auto KillerPlayerState = Killer ? Killer->GetPlayerState<ATPSBasePlayerState>() : nullptr;
+	const auto VictimPlayerState = Victim ? Victim->GetPlayerState<ATPSBasePlayerState>() : nullptr;
+
+	if (KillerPlayerState) { KillerPlayerState->AddKill(); }
+
+	if (VictimPlayerState) { VictimPlayerState->AddDeath(); }
+
+	// 准备重生被击杀的玩家
+	StartRespawn(Victim);
+}
+
+
+void ATPSGameModeBase::StartRespawn(AController *Controller)
+{
+	const auto RespawnComp = FTPSUtils::GetComponentByCurrentPlayer<UTPSRespawnComponent>(Controller);
+	if(!RespawnComp){return;}
+
+	RespawnComp->Respawn(GameData.RespawnTime);
+}
+
+void ATPSGameModeBase::RespawnPlayer(AController *Controller)
+{
+	ResetPlayer(Controller);
+}
+
+void ATPSGameModeBase::LogPlayerStates() const
+{
+	for (auto It = GetWorld()->GetControllerIterator(); It; ++It)
+	{
+		const auto Controller = It->Get();
+		if (!Controller) { continue; }
+
+		const auto PlayerState = Controller->GetPlayerState<ATPSBasePlayerState>();
+		if (!PlayerState) { continue; }
+
+		PlayerState->LogInfo();
+	}
 }
