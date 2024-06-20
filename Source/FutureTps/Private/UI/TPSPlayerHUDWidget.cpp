@@ -6,18 +6,20 @@
 #include "Components/TPSHealthComponent.h"
 #include "TPSUtil/TPSUtils.h"
 
+DEFINE_LOG_CATEGORY_STATIC(MyUTPSPlayerHUDWidgetLog, All, All);
 
 bool UTPSPlayerHUDWidget::Initialize()
 {
-
-	if (UTPSHealthComponent *HealthComponent = FTPSUtils::GetComponentByCurrentPlayer<UTPSHealthComponent>(
-		GetOwningPlayerPawn()))
+	if (GetOwningPlayer())
 	{
-		// 绑定生命组件的委托 (收到伤害时的委托)
-		HealthComponent->OnHealthChanged.AddUObject(this, &UTPSPlayerHUDWidget::HealthChanged);
+		// 绑定委托
+		// 当AController占据一个新的Pawn时触发的回调函数
+		// 也就是在APawn::OnPossess()被调用后(并且possess了一个新Pawn)就会触发我们的回调函数(OnNewPawn)
+		GetOwningPlayer()->GetOnNewPawnNotifier().AddUObject(this, &UTPSPlayerHUDWidget::OnNewPawn);
+
+		// 首次需要手动调用一次,因为控制器的OnPossess函数在 本类的Initialize之前调用(可以通过覆写OnPossess打日志来验证)
+		OnNewPawn(GetOwningPlayer()->GetPawn());
 	}
-
-
 	return Super::Initialize();
 }
 
@@ -107,4 +109,16 @@ ESlateVisibility UTPSPlayerHUDWidget::IsReloading() const
 void UTPSPlayerHUDWidget::HealthChanged(float Health, bool BIsDecreaseHealth)
 {
 	OnHealthChanged(Health, BIsDecreaseHealth);
+}
+
+void UTPSPlayerHUDWidget::OnNewPawn(APawn *NewPawn)
+{
+	if (!NewPawn) { UE_LOG(MyUTPSPlayerHUDWidgetLog, Error, TEXT("NewPawn Cant be NUll!")); }
+	UTPSHealthComponent *HealthComponent = FTPSUtils::GetComponentByCurrentPlayer<UTPSHealthComponent>(NewPawn);
+	if (HealthComponent)
+	{
+		// 绑定生命组件的委托 (收到伤害时的委托)
+		HealthComponent->OnHealthChanged.AddUObject(this, &UTPSPlayerHUDWidget::HealthChanged);
+	}
+
 }

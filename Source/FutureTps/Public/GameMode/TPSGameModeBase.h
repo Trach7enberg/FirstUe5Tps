@@ -28,6 +28,9 @@ public:
 	/// @return 一个UClass的APawn
 	virtual UClass *GetDefaultPawnClassForController_Implementation(AController *InController) override;
 
+	/// 记录玩家死亡信息到对应的PlayerState
+	/// @param Killer 
+	/// @param Victim 
 	void KillPlayer(AController *Killer, AController *Victim);
 
 	/// 获取当前回合数
@@ -71,6 +74,8 @@ private:
 	// 回合计时器(每秒)
 	FTimerHandle GameRoundTimerHandle;
 
+	bool BIsGameOver = false;
+	
 	/// 计时器调用的函数
 	/// 计算/更新游戏回合的时间
 	void GameRoundTimerUpdate();
@@ -107,4 +112,6 @@ private:
 	/// 打印世界中所有控制器对应的PlayerState
 	void LogPlayerStates() const;
 
+	/// 游戏结束
+	void GameOver();
 };

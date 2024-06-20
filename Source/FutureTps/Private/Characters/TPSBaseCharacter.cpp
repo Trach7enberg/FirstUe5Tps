@@ -3,6 +3,7 @@
 
 #include "Characters/TPSBaseCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 #include "Components/TPSHealthComponent.h"
 #include "Components/TPSWeaponLogicComponent.h"
 #include "Components/TPSCharacterMovementComponent.h"
@@ -61,6 +62,12 @@ ATPSBaseCharacter::ATPSBaseCharacter(const FObjectInitializer &ObjectInitializer
 
 	WeaponLogicComponent = CreateDefaultSubobject<UTPSWeaponLogicComponent>("WeaponLogicComponent");
 
+	CameraCollisionComponent = CreateDefaultSubobject<USphereComponent>("CameraCollisionComponent");
+	CameraCollisionComponent->SetupAttachment(CameraComponent);
+	CameraCollisionComponent->SetSphereRadius(10.0f);
+	CameraCollisionComponent->SetCollisionResponseToAllChannels(ECR_Overlap);
+
+
 	BIsJumpActionDown = false;
 	BIsRush = false;
 	BCanRotatingCamera = true;
@@ -101,6 +108,7 @@ void ATPSBaseCharacter::BeginPlay()
 	check(HealthComponent);
 	check(HealthTextComponent);
 	check(GetCharacterMovement());
+	check(CameraCollisionComponent);
 
 	InitCharacterName();
 	// 游戏开始手动显示血量
@@ -108,6 +116,9 @@ void ATPSBaseCharacter::BeginPlay()
 
 	// 绑定落地时的委托回调函数
 	LandedDelegate.AddDynamic(this, &ATPSBaseCharacter::OnGroundLanded);
+
+	CameraCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &ATPSBaseCharacter::CameraBeginOverlap);
+	CameraCollisionComponent->OnComponentEndOverlap.AddDynamic(this, &ATPSBaseCharacter::CameraEndOverlap);
 }
 
 // Called every frame
@@ -143,7 +154,6 @@ void ATPSBaseCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCo
 	PlayerInputComponent->BindAction("SwitchWeapons", IE_Pressed, WeaponLogicComponent,
 	                                 &UTPSWeaponLogicComponent::SwitchWeapon);
 
-	
 
 }
 
@@ -282,3 +292,24 @@ FString ATPSBaseCharacter::GetCharacterName()
 	InitCharacterName();
 	return CharacterName;
 }
+
+void ATPSBaseCharacter::CheckCameraOverlap()
+{
+	const auto NeedHide = CameraCollisionComponent->IsOverlappingComponent(GetCapsuleComponent());
+	GetMesh()->SetOwnerNoSee(NeedHide);
+
+	TArray<USceneComponent *> Childs;
+	GetMesh()->GetChildrenComponents(true, Childs);
+	for (auto Child : Childs)
+	{
+		const auto c = Cast<UPrimitiveComponent>(Child);
+		if (c) { c->SetOwnerNoSee(NeedHide); }
+	}
+}
+
+void ATPSBaseCharacter::CameraBeginOverlap(
+	UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex,
+	bool bFromSweep, const FHitResult &SweepResult) { CheckCameraOverlap(); }
+
+void ATPSBaseCharacter::CameraEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
+                                         UPrimitiveComponent *OtherComp, int32 OtherBodyIndex) { CheckCameraOverlap(); }

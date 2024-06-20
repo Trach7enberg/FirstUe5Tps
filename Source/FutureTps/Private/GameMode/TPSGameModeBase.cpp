@@ -1,5 +1,6 @@
 #include "GameMode/TPSGameModeBase.h"
 
+#include "EngineUtils.h"
 #include "Characters/TPSBaseCharacter.h"
 #include "Components/TPSRespawnComponent.h"
 #include "PlayerStates/TPSBasePlayerState.h"
@@ -74,7 +75,11 @@ void ATPSGameModeBase::GameRoundTimerUpdate()
 			ResetAllPlayer();
 			StartRound();
 		}
-		else { UE_LOG(MyATPSGameModeBaseLog, Error, TEXT("Over!")); }
+		else
+		{
+			GameOver();
+			UE_LOG(MyATPSGameModeBaseLog, Error, TEXT("Over!"));
+		}
 	}
 }
 
@@ -169,13 +174,17 @@ void ATPSGameModeBase::KillPlayer(AController *Killer, AController *Victim)
 void ATPSGameModeBase::StartRespawn(AController *Controller)
 {
 	const auto RespawnComp = FTPSUtils::GetComponentByCurrentPlayer<UTPSRespawnComponent>(Controller);
-	if(!RespawnComp){return;}
+	if (!RespawnComp) { return; }
+
+	// 复活剩余时间大于当前回合倒计时,则不重生
+	if (RespawnComp->GetRespawnTimeCountDown() >= CurrentRoundCountDown) { return; }
 
 	RespawnComp->Respawn(GameData.RespawnTime);
 }
 
 void ATPSGameModeBase::RespawnPlayer(AController *Controller)
 {
+	if (BIsGameOver) { return; }
 	ResetPlayer(Controller);
 }
 
@@ -191,4 +200,17 @@ void ATPSGameModeBase::LogPlayerStates() const
 
 		PlayerState->LogInfo();
 	}
+}
+
+void ATPSGameModeBase::GameOver()
+{
+	for (auto Pawn : TActorRange<APawn>(GetWorld()))
+	{
+		if (Pawn)
+		{
+			Pawn->TurnOff();
+			Pawn->DisableInput(nullptr);
+		}
+	}
+	BIsGameOver = true;
 }

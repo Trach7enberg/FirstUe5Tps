@@ -10,6 +10,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "TPSBaseCharacter.generated.h"
 
+class USphereComponent;
 class UTPSWeaponLogicComponent;
 class UTPSHealthComponent;
 
@@ -24,9 +25,6 @@ class FUTURETPS_API ATPSBaseCharacter : public ACharacter
 public:
 	ATPSBaseCharacter(const FObjectInitializer &ObjectInitializer);
 
-protected:
-	virtual void BeginPlay() override;
-
 public:
 	virtual void Tick(float DeltaTime) override;
 
@@ -34,7 +32,7 @@ public:
 	virtual void SetCharacterColor(const FLinearColor &Color);
 
 	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
-	
+
 	// 是否在冲刺
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=Movement)
 	bool BIsRush;
@@ -67,6 +65,8 @@ public:
 	FString GetCharacterName();
 
 protected:
+	virtual void BeginPlay() override;
+
 	// 初始化人物角色的mesh模型、动画等 (TODO 注意 发行打包时,不要调用此函数 会报错)
 	void InitMesh();
 
@@ -88,6 +88,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category=Weapon)
 	UTPSWeaponLogicComponent *WeaponLogicComponent;
 
+	// 摄像机的碰撞盒
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=Components)
+	USphereComponent *CameraCollisionComponent;
 
 	// 播放死亡蒙太奇
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Animation)
@@ -111,7 +114,7 @@ protected:
 
 	/// 角色的名字(GetName简化版)
 	UPROPERTY(EditDefaultsOnly, Category=Player)
-	FString CharacterName ;
+	FString CharacterName;
 
 	// 生命组件委托的回调函数
 	UFUNCTION()
@@ -126,7 +129,6 @@ private:
 	void RushEnd();
 	void MyJump();
 
-	
 
 	/// 生命组件当生命值变化时候委托的回调函数,主要用于更新角色头顶的文本
 	/// @param Health 变化的生命值
@@ -139,6 +141,19 @@ private:
 	void OnGroundLanded(const FHitResult &Hit);
 
 	/// 初始化当前角色的名字
-	void InitCharacterName() ;
+	void InitCharacterName();
 
+	/// 检测摄像机是否与角色重叠,重叠则对相应的物体进行隐藏处理
+	void CheckCameraOverlap();
+
+	/// 摄像机球体碰撞盒开始重叠时的回调函数
+	UFUNCTION()
+	void CameraBeginOverlap(UPrimitiveComponent *OverlappedComponent,
+	                        AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	                        const FHitResult &SweepResult);
+
+	/// 摄像机球体碰撞盒结束重叠时的回调函数
+	UFUNCTION()
+	void CameraEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp,
+	                      int32 OtherBodyIndex);
 };

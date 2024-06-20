@@ -150,6 +150,17 @@ struct FGameData
 	// 队伍ID的数组,默认只有2个队伍
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game)
 	TArray<int32> TeamIDs{0, 1,};
-
 	
 };
+
+/// 游戏模式的状态枚举,枚举的每个值都将存储为uint8类型
+UENUM()
+enum ETPSMatchState:uint8
+{
+	WaitingToStart = 0,
+	InProgress,
+	Pause,
+	GameOver,
+};
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchStateSignature, ETPSMatchState);

@@ -84,4 +84,6 @@ private:
 	UFUNCTION(BlueprintCallable, Category=UI)
 	void HealthChanged(float health, bool BIsDecreaseHealth);
 
+	UFUNCTION()
+	void OnNewPawn( APawn* NewPawn);
 };
