@@ -8,8 +8,9 @@
 
 DEFINE_LOG_CATEGORY_STATIC(MyUTPSPlayerHUDWidgetLog, All, All);
 
-bool UTPSPlayerHUDWidget::Initialize()
+void UTPSPlayerHUDWidget::NativeOnInitialized()
 {
+	Super::NativeOnInitialized();
 	if (GetOwningPlayer())
 	{
 		// 绑定委托
@@ -20,7 +21,6 @@ bool UTPSPlayerHUDWidget::Initialize()
 		// 首次需要手动调用一次,因为控制器的OnPossess函数在 本类的Initialize之前调用(可以通过覆写OnPossess打日志来验证)
 		OnNewPawn(GetOwningPlayer()->GetPawn());
 	}
-	return Super::Initialize();
 }
 
 float UTPSPlayerHUDWidget::GetHealthPercent() const
@@ -65,6 +65,8 @@ FText UTPSPlayerHUDWidget::GetCurrentAmmoText() const
 
 	return FText::FromString(String + "/" + FString::FromInt(AmmoData.Magazines));
 }
+
+
 
 
 bool UTPSPlayerHUDWidget::IsPlayerAlive() const

@@ -18,8 +18,6 @@ class FUTURETPS_API UTPSPlayerHUDWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	/// 本类初始化函数
-	virtual bool Initialize() override;
 	///  获取玩家生命值
 	/// @return 生命值
 	UFUNCTION(BlueprintCallable, Category=UI)
@@ -64,8 +62,10 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category=UI)
 	void OnHealthChanged(float Health, bool BIsDecreaseHealth);
 
+protected:
+	/// 初始化函数,Initialize 成功执行初始化时候会调用这个函数
+	virtual void NativeOnInitialized() override;
 
-	
 private:
 	/// 
 	/// @return 
