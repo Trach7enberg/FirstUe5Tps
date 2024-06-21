@@ -24,10 +24,13 @@ ATPSGameModeBase::ATPSGameModeBase()
 void ATPSGameModeBase::StartPlay()
 {
 	Super::StartPlay();
+	BIsGameOver = false;
 	MaxRound = GameData.RoundsCount;
 	SpawnBots();
 	InitAllPlayerState();
 	StartRound();
+
+	SetMatchState(ETPSMatchState::InProgress);
 }
 
 UClass *ATPSGameModeBase::GetDefaultPawnClassForController_Implementation(AController *InController)
@@ -68,7 +71,7 @@ void ATPSGameModeBase::GameRoundTimerUpdate()
 	if (--CurrentRoundCountDown <= 0)
 	{
 		GetWorldTimerManager().ClearTimer(GameRoundTimerHandle);
-		if (CurrentRound + 1 <= MaxRound)
+		if (CurrentRound + 1 < MaxRound)
 		{
 			++CurrentRound;
 
@@ -78,7 +81,7 @@ void ATPSGameModeBase::GameRoundTimerUpdate()
 		else
 		{
 			GameOver();
-			UE_LOG(MyATPSGameModeBaseLog, Error, TEXT("Over!"));
+			// UE_LOG(MyATPSGameModeBaseLog, Error, TEXT("Over!"));
 		}
 	}
 }
@@ -188,6 +191,7 @@ void ATPSGameModeBase::RespawnPlayer(AController *Controller)
 	ResetPlayer(Controller);
 }
 
+
 void ATPSGameModeBase::LogPlayerStates() const
 {
 	for (auto It = GetWorld()->GetControllerIterator(); It; ++It)
@@ -213,4 +217,29 @@ void ATPSGameModeBase::GameOver()
 		}
 	}
 	BIsGameOver = true;
+
+	SetMatchState(ETPSMatchState::GameOver);
+}
+
+void ATPSGameModeBase::SetMatchState(ETPSMatchState NewState)
+{
+	if (NewState == CurrentMatchState) { return; }
+
+	CurrentMatchState = NewState;
+	OnMatchStateChanged.Broadcast(NewState);
+}
+
+bool ATPSGameModeBase::SetPause(APlayerController *PC, FCanUnpause CanUnpauseDelegate)
+{
+	const auto bPause = Super::SetPause(PC, CanUnpauseDelegate);
+	if (bPause) { SetMatchState(ETPSMatchState::Pause); }
+	return bPause;
+}
+
+bool ATPSGameModeBase::ClearPause()
+{
+	const auto bClearPause = Super::ClearPause();
+
+	if (bClearPause) { SetMatchState(ETPSMatchState::InProgress); }
+	return bClearPause;
 }

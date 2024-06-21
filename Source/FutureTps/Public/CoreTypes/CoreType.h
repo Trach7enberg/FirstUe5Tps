@@ -128,12 +128,12 @@ struct FGameData
 
 
 	// 每回合时间,单位为秒
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game, meta=(ClampMin=5, ClampMax=300))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game, meta=(ClampMin=3, ClampMax=300))
 	float RoundTime = 3;
 
 	// 重生时间
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game, meta=(ClampMin=2, ClampMax=60))
-	float RespawnTime = 5;
+	float RespawnTime = 1;
 	
 	// 默认队伍颜色
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game)
@@ -155,12 +155,12 @@ struct FGameData
 
 /// 游戏模式的状态枚举,枚举的每个值都将存储为uint8类型
 UENUM()
-enum ETPSMatchState:uint8
+enum class ETPSMatchState:uint8
 {
-	WaitingToStart = 0,
-	InProgress,
-	Pause,
-	GameOver,
+	WaitingToStart = 0,	// 等待游戏开始
+	InProgress,	// 游戏进行中
+	Pause,	// 游戏暂停
+	GameOver,	// 游戏结束
 };
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchStateSignature, ETPSMatchState);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchStateChangeSignature, ETPSMatchState);

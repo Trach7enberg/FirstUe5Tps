@@ -22,6 +22,8 @@ public:
 	/// 游戏开始时,会调用这个函数,他在所有actor的BeginPlay之前执行
 	virtual void StartPlay() override;
 
+	FOnMatchStateChangeSignature OnMatchStateChanged;
+
 	/// 根据控制器生成对应的AICharacter类,而不是基类(父类函数默认返回基类)
 	/// 如果控制器与其相关联的AICharacter类不存在,那么生成的AICharacter将会是基类
 	/// @param InController 角色的控制器
@@ -47,7 +49,19 @@ public:
 
 	/// 重生玩家(AI)(一般用于玩家死亡之后)
 	/// @param Controller 玩家(或AI)的控制器
-	void RespawnPlayer(AController * Controller);
+	void RespawnPlayer(AController *Controller);
+
+	/// 游戏是否暂停
+	/// @param PC 
+	/// @param CanUnpauseDelegate 
+	/// @return 
+	virtual bool SetPause(APlayerController *PC, FCanUnpause CanUnpauseDelegate) override;
+
+	/// 清除暂停,恢复游戏
+	/// @return 
+	virtual bool ClearPause() override;
+
+	ETPSMatchState GetCurrentMatchState() const { return CurrentMatchState; }
 
 protected:
 	/// 通过AI的控制器生成AI和销毁AI
@@ -63,11 +77,14 @@ protected:
 	FGameData GameData;
 
 private:
+	// 当前游戏状态
+	ETPSMatchState CurrentMatchState = ETPSMatchState::WaitingToStart;
+
 	// 当前游戏回合
 	int32 CurrentRound = 0;
 
 	int32 MaxRound = 1;
-	
+
 	// 当前回合倒计时
 	int32 CurrentRoundCountDown = 0;
 
@@ -75,7 +92,7 @@ private:
 	FTimerHandle GameRoundTimerHandle;
 
 	bool BIsGameOver = false;
-	
+
 	/// 计时器调用的函数
 	/// 计算/更新游戏回合的时间
 	void GameRoundTimerUpdate();
@@ -108,10 +125,14 @@ private:
 	/// 开始执行重生玩家逻辑
 	/// @param Controller 玩家的控制器 
 	void StartRespawn(AController *Controller);
-	
+
 	/// 打印世界中所有控制器对应的PlayerState
 	void LogPlayerStates() const;
 
 	/// 游戏结束
 	void GameOver();
+
+	/// 设置游戏状态
+	/// @param NewState 游戏状态枚举 
+	void SetMatchState(ETPSMatchState NewState);
 };

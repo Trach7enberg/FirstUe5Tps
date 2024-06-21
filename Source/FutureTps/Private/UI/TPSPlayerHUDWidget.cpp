@@ -113,7 +113,10 @@ void UTPSPlayerHUDWidget::HealthChanged(float Health, bool BIsDecreaseHealth)
 
 void UTPSPlayerHUDWidget::OnNewPawn(APawn *NewPawn)
 {
-	if (!NewPawn) { UE_LOG(MyUTPSPlayerHUDWidgetLog, Error, TEXT("NewPawn Cant be NUll!")); }
+	if (!NewPawn)
+	{
+		// UE_LOG(MyUTPSPlayerHUDWidgetLog, Error, TEXT("NewPawn Cant be NUll!"));
+	}
 	UTPSHealthComponent *HealthComponent = FTPSUtils::GetComponentByCurrentPlayer<UTPSHealthComponent>(NewPawn);
 	if (HealthComponent)
 	{

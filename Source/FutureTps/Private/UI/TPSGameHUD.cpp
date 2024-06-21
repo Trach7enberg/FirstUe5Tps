@@ -4,7 +4,10 @@
 #include "UI/TPSGameHUD.h"
 #include "Blueprint/UserWidget.h"
 #include "Engine/Canvas.h"
+#include "GameMode/TPSGameModeBase.h"
+#include "CoreTypes/CoreType.h"	
 
+DEFINE_LOG_CATEGORY_STATIC(MyATPSGameHUDLog, All, All);
 
 void ATPSGameHUD::DrawHUD()
 {
@@ -16,12 +19,25 @@ void ATPSGameHUD::DrawHUD()
 void ATPSGameHUD::BeginPlay()
 {
 	Super::BeginPlay();
-	if (UUserWidget *UserWidget = CreateWidget<UUserWidget>(GetWorld(), PlayHUDWidgetClass))
+
+
+	MatchStateWidgets.Add(ETPSMatchState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayHUDWidgetClass));
+	MatchStateWidgets.Add(ETPSMatchState::Pause, CreateWidget<UUserWidget>(GetWorld(), PauseHUDWidgetClass));
+	MatchStateWidgets.Add(ETPSMatchState::GameOver, CreateWidget<UUserWidget>(GetWorld(), GameOVerHUDWidgetClass));
+
+	for (auto Widget : MatchStateWidgets)
 	{
-		// z Order 是当有多个小部件的时候渲染的顺序,默认参数为0
-		UserWidget->AddToViewport();
+		const auto GameWidget = Widget.Value;
+		if (!GameWidget) { continue; }
+		GameWidget->AddToViewport();
+		GameWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 
+	if (GetWorld())
+	{
+		const auto GameMode = Cast<ATPSGameModeBase>(GetWorld()->GetAuthGameMode());
+		if (GameMode) { GameMode->OnMatchStateChanged.AddUObject(this, &ATPSGameHUD::OnMatchStateChanged); }
+	}
 
 }
 
@@ -45,4 +61,18 @@ void ATPSGameHUD::DrawCrossHair()
 	DrawLine(Center.X - HalfLineSize, Center.Y, Center.X + HalfLineSize, Center.Y, LineColor, LineThickness);
 	// 画垂直线
 	DrawLine(Center.X, Center.Y + HalfLineSize, Center.X, Center.Y - HalfLineSize, LineColor, LineThickness);
+}
+
+void ATPSGameHUD::OnMatchStateChanged(const ETPSMatchState MatchState)
+{
+	// 隐藏当前的Widget
+	if (CurrentMatchStateWidget) { CurrentMatchStateWidget->SetVisibility(ESlateVisibility::Hidden); }
+
+	// 获取新的Widget
+	if (MatchStateWidgets.Contains(MatchState)) { CurrentMatchStateWidget = MatchStateWidgets[MatchState]; }
+
+	// 然后显示新的Widget
+	if (CurrentMatchStateWidget) { CurrentMatchStateWidget->SetVisibility(ESlateVisibility::Visible); }
+
+	UE_LOG(MyATPSGameHUDLog, Display, TEXT("GameStateChanged: %s"), *UEnum::GetValueAsString(MatchState));
 }
