@@ -4,30 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "TPSPauseWidget.generated.h"
+#include "TPSQuitGameWidget.generated.h"
 
 class UButton;
 /**
- * 暂停界面UI
+ * 退出游戏的UI
  */
 UCLASS()
-class FUTURETPS_API UTPSPauseWidget : public UUserWidget
+class FUTURETPS_API UTPSQuitGameWidget : public UUserWidget
 {
 	GENERATED_BODY()
-
-
 protected:
 	virtual void NativeOnInitialized() override;
 	
-	// 继续游戏按钮
+	// 退出游戏按钮
 	UPROPERTY(meta=(BindWidget))
-	UButton * ContinueButton;
-
-	
-	
+	UButton* QuitButton;
 
 private:
+	
 	UFUNCTION()
-	void OnClearPause();
-
+	void OnQuitGame();
 };

@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "TPSPauseWidget.generated.h"
+#include "TPSBackToMenuWidget.generated.h"
 
 class UButton;
 /**
- * 暂停界面UI
+ * 返回主菜单界面的UI(实际是一个按钮)
  */
 UCLASS()
-class FUTURETPS_API UTPSPauseWidget : public UUserWidget
+class FUTURETPS_API UTPSBackToMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -19,15 +19,12 @@ class FUTURETPS_API UTPSPauseWidget : public UUserWidget
 protected:
 	virtual void NativeOnInitialized() override;
 	
-	// 继续游戏按钮
+	// 返回主菜单按钮
 	UPROPERTY(meta=(BindWidget))
-	UButton * ContinueButton;
-
-	
-	
+	UButton* MenuButton;
 
 private:
+	
 	UFUNCTION()
-	void OnClearPause();
-
+	void OnBackToMenu();
 };

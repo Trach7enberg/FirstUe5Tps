@@ -22,6 +22,7 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UButton *StartGameButton;
 
+	/// 默认打开的关卡名字
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category=StartLevelName)
 	FName StartLevelName = "Tmap";
 
