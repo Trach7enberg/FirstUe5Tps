@@ -1,7 +1,7 @@
 // FutureTPS Game All Rights Reserved
 
 
-#include "UI/TPSSpectatorHudWidget.h"
+#include "UI/Widgets/TPSSpectatorHudWidget.h"
 
 #include "Components/TPSRespawnComponent.h"
 #include "TPSUtil/TPSUtils.h"

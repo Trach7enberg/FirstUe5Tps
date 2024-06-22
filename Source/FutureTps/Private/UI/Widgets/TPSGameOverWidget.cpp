@@ -1,7 +1,7 @@
 // FutureTPS Game All Rights Reserved
 
 
-#include "UI/TPSGameOverWidget.h"
+#include "UI/Widgets/TPSGameOverWidget.h"
 
 #include "Components/Button.h"
 #include "Components/VerticalBox.h"
@@ -9,7 +9,7 @@
 #include "CoreTypes/CoreType.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerStates/TPSBasePlayerState.h"
-#include "UI/TPSPlayerStatisticsWidget.h"
+#include "UI/Widgets/TPSPlayerStatisticsWidget.h"
 
 
 void UTPSGameOverWidget::NativeOnInitialized()

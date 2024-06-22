@@ -1,7 +1,7 @@
 // FutureTPS Game All Rights Reserved
 
 
-#include "UI/TPSPauseWidget.h"
+#include "UI/Widgets/TPSPauseWidget.h"
 
 #include "Components/Button.h"
 #include "GameFramework/GameModeBase.h"

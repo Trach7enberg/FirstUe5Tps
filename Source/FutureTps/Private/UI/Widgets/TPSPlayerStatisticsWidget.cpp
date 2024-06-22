@@ -1,7 +1,7 @@
 // FutureTPS Game All Rights Reserved
 
 
-#include "UI/TPSPlayerStatisticsWidget.h"
+#include "UI/Widgets/TPSPlayerStatisticsWidget.h"
 
 #include "Components/Image.h"
 #include "Components/TextBlock.h"

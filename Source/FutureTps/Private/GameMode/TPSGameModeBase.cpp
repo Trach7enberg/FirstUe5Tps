@@ -5,7 +5,7 @@
 #include "Components/TPSRespawnComponent.h"
 #include "PlayerStates/TPSBasePlayerState.h"
 #include "TPSUtil/TPSUtils.h"
-#include "UI/TPSGameHUD.h"
+#include "UI/Hud/TPSGameHUD.h"
 #include "controllers/TPSAIController.h"
 #include "controllers/TPSPlayerController.h"
 

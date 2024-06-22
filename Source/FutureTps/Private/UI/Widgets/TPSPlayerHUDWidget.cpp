@@ -1,7 +1,9 @@
 // FutureTPS Game All Rights Reserved
 
 
-#include "UI/TPSPlayerHUDWidget.h"
+
+#include "UI/Widgets/TPSPlayerHUDWidget.h"
+
 #include "Components/TPSWeaponLogicComponent.h"
 #include "Components/TPSHealthComponent.h"
 #include "TPSUtil/TPSUtils.h"

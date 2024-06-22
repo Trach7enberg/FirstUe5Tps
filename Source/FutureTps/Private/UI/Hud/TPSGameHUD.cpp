@@ -1,7 +1,8 @@
 // FutureTPS Game All Rights Reserved
 
 
-#include "UI/TPSGameHUD.h"
+#include "UI/Hud/TPSGameHUD.h"
+
 #include "Blueprint/UserWidget.h"
 #include "Engine/Canvas.h"
 #include "GameMode/TPSGameModeBase.h"

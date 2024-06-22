@@ -1,12 +1,12 @@
 // FutureTPS Game All Rights Reserved
 
 
-#include "UI/TPSGameDataWidget.h"
+#include "UI/Widgets/TPSGameDataWidget.h"
 
 #include "GameMode/TPSGameModeBase.h"
 #include "TPSUtil/TPSUtils.h"
 
-bool UTPSGameDataWidget::Initialize() { return Super::Initialize(); }
+auto UTPSGameDataWidget::Initialize() -> bool { return Super::Initialize(); }
 
 FText UTPSGameDataWidget::GetRoundText() const
 {

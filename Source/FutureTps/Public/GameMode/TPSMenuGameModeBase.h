@@ -13,5 +13,7 @@ UCLASS()
 class FUTURETPS_API ATPSMenuGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+
+public:
 	
 };
