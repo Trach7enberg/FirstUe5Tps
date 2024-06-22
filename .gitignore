@@ -2,8 +2,12 @@ Binaries
 DerivedDataCache
 Intermediate
 Saved
-/Content/ExternalContent/Maps/
-/Content/StaticMeshes/TMBackyardPack2/
+/Content/ExternalContent/
+/Content/StaticMeshes/
+/Content/__ExternalActors__/
+/Content/__ExternalObjects__/
+/Content/VFX/
+/Content/Weapons
 .vscode
 .vs
 *.VC.db
