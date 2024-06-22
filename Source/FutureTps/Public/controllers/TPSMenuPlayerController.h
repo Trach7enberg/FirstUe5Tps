@@ -7,11 +7,13 @@
 #include "TPSMenuPlayerController.generated.h"
 
 /**
- * 
+ * 主菜单的玩家控制器
  */
 UCLASS()
 class FUTURETPS_API ATPSMenuPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+protected:
+	virtual void BeginPlay() override;
 };

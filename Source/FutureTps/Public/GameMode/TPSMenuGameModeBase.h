@@ -7,7 +7,7 @@
 #include "TPSMenuGameModeBase.generated.h"
 
 /**
- * 
+ *  主菜单游戏模式类
  */
 UCLASS()
 class FUTURETPS_API ATPSMenuGameModeBase : public AGameModeBase
@@ -15,5 +15,5 @@ class FUTURETPS_API ATPSMenuGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 
 public:
-	
+	ATPSMenuGameModeBase();
 };

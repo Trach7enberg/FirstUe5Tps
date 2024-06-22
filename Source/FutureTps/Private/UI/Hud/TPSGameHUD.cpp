@@ -75,5 +75,5 @@ void ATPSGameHUD::OnMatchStateChanged(const ETPSMatchState MatchState)
 	// 然后显示新的Widget
 	if (CurrentMatchStateWidget) { CurrentMatchStateWidget->SetVisibility(ESlateVisibility::Visible); }
 
-	UE_LOG(MyATPSGameHUDLog, Display, TEXT("GameStateChanged: %s"), *UEnum::GetValueAsString(MatchState));
+	UE_LOG(MyATPSGameHUDLog, Error, TEXT("GameStateChanged: %s"), *UEnum::GetValueAsString(MatchState));
 }
