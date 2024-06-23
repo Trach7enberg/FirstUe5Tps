@@ -5,17 +5,20 @@
 
 #include "BrainComponent.h"
 #include "Components/TPSAIWeaponLogicComponent.h"
+#include "Components/TPSHealthComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "UI/Widgets/TPSHealthBarWidget.h"
 #include "controllers/TPSAIController.h"
 
-DEFINE_LOG_CATEGORY_STATIC(MyATPSAICharacterLog,All,All);
+DEFINE_LOG_CATEGORY_STATIC(MyATPSAICharacterLog, All, All);
 
 ATPSAICharacter::ATPSAICharacter(const FObjectInitializer &ObjectInitializer):
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UTPSAIWeaponLogicComponent>("WeaponLogicComponent"))
 {
 	AutoPossessAI = EAutoPossessAI::Disabled;
-	AIControllerClass = ATPSAICharacter::StaticClass(); 
-	
+	AIControllerClass = ATPSAICharacter::StaticClass();
+
 	bUseControllerRotationYaw = false;
 	if (GetCharacterMovement())
 	{
@@ -25,6 +28,17 @@ ATPSAICharacter::ATPSAICharacter(const FObjectInitializer &ObjectInitializer):
 		GetCharacterMovement()->RotationRate = FRotator(0, 200.0f, 0);
 	}
 
+	HealthBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("HealthBar");;
+	HealthBarWidgetComponent->SetupAttachment(GetRootComponent());
+	HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+
+}
+
+void ATPSAICharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	check(HealthBarWidgetComponent);
 }
 
 void ATPSAICharacter::OnDeath()
@@ -40,4 +54,14 @@ void ATPSAICharacter::OnDeath()
 		// UE_LOG(MyATPSAICharacterLog,Error,TEXT("CleanUpBehaviorTree"));
 	}
 
+}
+
+void ATPSAICharacter::OnHealthChanged(float Health, bool BIsDecreaseHealth)
+{
+	Super::OnHealthChanged(Health, BIsDecreaseHealth);
+
+	const auto HealthBarWidget = Cast<UTPSHealthBarWidget>(HealthBarWidgetComponent->GetUserWidgetObject());
+	if(!HealthBarWidget){return;}
+
+	HealthBarWidget->SetHealthBar(HealthComponent->GetHealthPercent());
 }

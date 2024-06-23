@@ -25,11 +25,11 @@ void UTPSBackToMenuWidget::OnBackToMenu()
 	const auto TPSGameInstance = GetWorld()->GetGameInstance<UTPSGameInstance>();
 	if (!TPSGameInstance) { return; }
 
-	if (TPSGameInstance->GetMainMenuMapName().IsNone())
+	if (TPSGameInstance->GetMainMenuLevelName().IsNone())
 	{
 		UE_LOG(MyUTPSBackToMenuWidgetLog, Error, TEXT("MenuLevelName is None"));
 		return;
 	}
 
-	UGameplayStatics::OpenLevel(this, TPSGameInstance->GetMainMenuMapName());
+	UGameplayStatics::OpenLevel(this, TPSGameInstance->GetMainMenuLevelName());
 }

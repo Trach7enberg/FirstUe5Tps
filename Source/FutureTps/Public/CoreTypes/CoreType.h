@@ -112,7 +112,7 @@ struct FImpactData
 };
 
 /// 游戏模式的数据结构,存储着游戏模式的配置信息
-USTRUCT(Blueprintable)
+USTRUCT(BlueprintType)
 struct FGameData
 {
 	GENERATED_BODY()
@@ -134,7 +134,7 @@ struct FGameData
 	// 重生时间
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game, meta=(ClampMin=2, ClampMax=60))
 	float RespawnTime = 1;
-	
+
 	// 默认队伍颜色
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game)
 	FLinearColor DefaultTeamColor = FLinearColor::Red;
@@ -150,17 +150,42 @@ struct FGameData
 	// 队伍ID的数组,默认只有2个队伍
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game)
 	TArray<int32> TeamIDs{0, 1,};
-	
+
 };
 
 /// 游戏模式的状态枚举,枚举的每个值都将存储为uint8类型
-UENUM()
+UENUM(BlueprintType)
 enum class ETPSMatchState:uint8
 {
-	WaitingToStart = 0,	// 等待游戏开始
-	InProgress,	// 游戏进行中
-	Pause,	// 游戏暂停
-	GameOver,	// 游戏结束
+	WaitingToStart = 0, // 等待游戏开始
+	InProgress, // 游戏进行中
+	Pause, // 游戏暂停
+	GameOver, // 游戏结束
 };
 
+/// 游戏模式状态改变的委托
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchStateChangeSignature, ETPSMatchState);
+
+
+/// 主菜单中选择关卡项的数据
+USTRUCT(BlueprintType)
+struct FLevelData
+{
+	GENERATED_BODY()
+
+	// 实际的关卡名字
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game)
+	FName LevelName = NAME_None;
+
+	// 关卡显示的名字
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game)
+	FName LevelDisplayName = NAME_None;
+
+	// 关卡选择的缩略图
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game)
+	UTexture2D *LevelThumbnail = nullptr;
+
+};
+
+/// 选择关卡时的委托,传递选择的关卡数据到需要的地方(比如主菜单)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnLevelSelectedSignature, const FLevelData &);

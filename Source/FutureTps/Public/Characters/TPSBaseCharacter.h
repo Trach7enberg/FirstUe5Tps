@@ -120,6 +120,11 @@ protected:
 	UFUNCTION()
 	virtual void OnDeath();
 
+	/// 生命组件当生命值变化时候委托的回调函数,主要用于更新角色头顶的文本
+	/// @param Health 变化的生命值
+	/// @param BIsDecreaseHealth 当前生命值变化是降低还是增加 
+	virtual void OnHealthChanged(float Health, bool BIsDecreaseHealth);
+
 private:
 	void MoveForward(float value);
 	void MoveRight(float value);
@@ -128,13 +133,6 @@ private:
 	void RushBegin();
 	void RushEnd();
 	void MyJump();
-
-
-	/// 生命组件当生命值变化时候委托的回调函数,主要用于更新角色头顶的文本
-	/// @param Health 变化的生命值
-	/// @param BIsDecreaseHealth 当前生命值变化是降低还是增加 
-	UFUNCTION()
-	void OnHealthChanged(float Health, bool BIsDecreaseHealth);
 
 	// 当角色落地时候触发该回调函数,记得在LandedDelegate绑定
 	UFUNCTION()

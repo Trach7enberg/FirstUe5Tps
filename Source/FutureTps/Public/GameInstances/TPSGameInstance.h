@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CoreTypes/CoreType.h"
 #include "Engine/GameInstance.h"
 #include "TPSGameInstance.generated.h"
 
@@ -16,16 +17,30 @@ class FUTURETPS_API UTPSGameInstance : public UGameInstance
 	GENERATED_BODY()
 
 public:
-	FName GetDefaultMapName() const { return DefaultMapName; }
+	FLevelData GetStartLevel() const { return StartLevel; }
 
-	FName GetMainMenuMapName() const { return MainMenuMapNam; }
+	/// 设置当前要开始游戏的关卡的数据
+	/// @param Data 关卡数据
+	void SetStartLevel(const FLevelData &Data) { StartLevel = Data; }
 
-private:
-	// 默认地图名称
-	UPROPERTY(EditDefaultsOnly, Category=Game)
-	FName DefaultMapName = NAME_None;
+	FName GetMainMenuLevelName() const { return MainMenuMapNam; }
+
+	/// @brief 获取所有关卡数据
+	/// @return 关卡数据数组
+	TArray<FLevelData> GetLevelsData() const { return LevelsData; }
+
+protected:
+	// 被选择开始游戏的关卡的数据
+	UPROPERTY(EditDefaultsOnly, Category=Game,meta=(ToolTip="关卡的名字(LevelName)应该是独一无二的"))
+	TArray<FLevelData> LevelsData;
 
 	// 主菜单地图名称
 	UPROPERTY(EditDefaultsOnly, Category=Game)
 	FName MainMenuMapNam = NAME_None;
+
+private:
+	// 默认关卡
+	FLevelData StartLevel{};
+
+
 };
