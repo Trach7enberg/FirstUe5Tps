@@ -8,6 +8,7 @@
 #include "Components/TPSHealthComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpectatorPawn.h"
 #include "UI/Widgets/TPSHealthBarWidget.h"
 #include "controllers/TPSAIController.h"
 
@@ -16,6 +17,8 @@ DEFINE_LOG_CATEGORY_STATIC(MyATPSAICharacterLog, All, All);
 ATPSAICharacter::ATPSAICharacter(const FObjectInitializer &ObjectInitializer):
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UTPSAIWeaponLogicComponent>("WeaponLogicComponent"))
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	AutoPossessAI = EAutoPossessAI::Disabled;
 	AIControllerClass = ATPSAICharacter::StaticClass();
 
@@ -31,7 +34,15 @@ ATPSAICharacter::ATPSAICharacter(const FObjectInitializer &ObjectInitializer):
 	HealthBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("HealthBar");;
 	HealthBarWidgetComponent->SetupAttachment(GetRootComponent());
 	HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	HealthBarWidgetComponent->SetDrawAtDesiredSize(true);
+	HealthBarWidgetComponent->SetRelativeLocation(FVector(0, 0, 89));
 
+}
+
+void ATPSAICharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	UpdateHealthBarWidgetVisibility();
 }
 
 void ATPSAICharacter::BeginPlay()
@@ -61,7 +72,28 @@ void ATPSAICharacter::OnHealthChanged(float Health, bool BIsDecreaseHealth)
 	Super::OnHealthChanged(Health, BIsDecreaseHealth);
 
 	const auto HealthBarWidget = Cast<UTPSHealthBarWidget>(HealthBarWidgetComponent->GetUserWidgetObject());
-	if(!HealthBarWidget){return;}
+	if (!HealthBarWidget) { return; }
 
 	HealthBarWidget->SetHealthBar(HealthComponent->GetHealthPercent());
+}
+
+void ATPSAICharacter::UpdateHealthBarWidgetVisibility() const
+{
+	if (!GetWorld() || !GetWorld()->GetControllerIterator()) { return; }
+
+	for (auto It = GetWorld()->GetControllerIterator(); It; ++It)
+	{
+		if (!It->Get()->IsPlayerController()) { continue; }
+
+
+		const auto PlayerController = Cast<APlayerController>(It->Get());
+
+		if (!PlayerController || !PlayerController->GetPawnOrSpectator()) { continue; }
+		const auto PlayerLocation = PlayerController->GetPawnOrSpectator()->GetActorLocation();
+		const auto Distance = FVector::Distance(PlayerLocation, GetActorLocation());
+
+		// TODO 多人游戏时,需要根据玩家的位置来设置AI的生命值UI的可见性
+		HealthBarWidgetComponent->SetVisibility(Distance < HealthBarVisibilityDistance, true);
+	}
+
 }

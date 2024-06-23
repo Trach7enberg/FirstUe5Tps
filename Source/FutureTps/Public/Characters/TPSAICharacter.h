@@ -22,13 +22,21 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=AI)
 	UBehaviorTree *BehaviorTreeAsset;
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Components)
 	UWidgetComponent *HealthBarWidgetComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Components)
+	float HealthBarVisibilityDistance = 800.f;
+
 	virtual void BeginPlay() override;
 
 	virtual void OnDeath() override;
-	
+
 	virtual void OnHealthChanged(float Health, bool BIsDecreaseHealth) override;
+
+	/// 根据当前AI和玩家的距离,设置AI生命值UI的可见性
+	void UpdateHealthBarWidgetVisibility() const;
 };
