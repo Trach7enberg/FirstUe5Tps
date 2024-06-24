@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "TPSBaseWidget.h"
 #include "TPSPauseWidget.generated.h"
 
 class UButton;
@@ -11,7 +11,7 @@ class UButton;
  * 暂停界面UI
  */
 UCLASS()
-class FUTURETPS_API UTPSPauseWidget : public UUserWidget
+class FUTURETPS_API UTPSPauseWidget : public UTPSBaseWidget
 {
 	GENERATED_BODY()
 

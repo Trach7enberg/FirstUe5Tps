@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "TPSBaseWidget.h"
 #include "TPSGameOverWidget.generated.h"
 
 class UButton;
@@ -13,7 +13,7 @@ class UVerticalBox;
  * 游戏结束界面
  */
 UCLASS()
-class FUTURETPS_API UTPSGameOverWidget : public UUserWidget
+class FUTURETPS_API UTPSGameOverWidget : public UTPSBaseWidget
 {
 	GENERATED_BODY()
 

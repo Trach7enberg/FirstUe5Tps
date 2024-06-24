@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "TPSBaseWidget.h"
 #include "TPSPlayerHUDWidget.generated.h"
 
 class UProgressBar;
@@ -14,7 +14,7 @@ struct FWeaponUIData;
  * 玩家主显示UI类,玩家的UIWidget蓝图继承自这个类 
  */
 UCLASS()
-class FUTURETPS_API UTPSPlayerHUDWidget : public UUserWidget
+class FUTURETPS_API UTPSPlayerHUDWidget : public UTPSBaseWidget
 {
 	GENERATED_BODY()
 
@@ -74,6 +74,10 @@ protected:
 
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar *PlayerHealthBar;
+
+	// 玩家受伤时的红屏动画
+	UPROPERTY(meta=(BindWidgetAnim),Transient)
+	UWidgetAnimation *BloodBlinking;
 
 	// 生命值小于等于这个数会改变颜色
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=UI)

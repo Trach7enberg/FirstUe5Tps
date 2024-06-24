@@ -122,6 +122,13 @@ void UTPSPlayerHUDWidget::HealthChanged(float Health, bool BIsDecreaseHealth)
 {
 	OnHealthChanged(Health, BIsDecreaseHealth);
 	UpdatePlayerHealthBar();
+
+	// 播放角色受击动画
+	if (!IsAnimationPlaying(BloodBlinking) && BIsDecreaseHealth)
+	{
+		PlayAnimation(BloodBlinking, 0.0f, 1, EUMGSequencePlayMode::Forward, 1.0f, true);
+	}
+
 }
 
 void UTPSPlayerHUDWidget::OnNewPawn(APawn *NewPawn)

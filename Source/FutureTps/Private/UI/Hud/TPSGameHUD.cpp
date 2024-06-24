@@ -2,11 +2,10 @@
 
 
 #include "UI/Hud/TPSGameHUD.h"
-
-#include "Blueprint/UserWidget.h"
 #include "Engine/Canvas.h"
 #include "GameMode/TPSGameModeBase.h"
 #include "CoreTypes/CoreType.h"	
+#include "UI/Widgets/TPSBaseWidget.h"
 
 DEFINE_LOG_CATEGORY_STATIC(MyATPSGameHUDLog, All, All);
 
@@ -22,9 +21,9 @@ void ATPSGameHUD::BeginPlay()
 	Super::BeginPlay();
 
 
-	MatchStateWidgets.Add(ETPSMatchState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayHUDWidgetClass));
-	MatchStateWidgets.Add(ETPSMatchState::Pause, CreateWidget<UUserWidget>(GetWorld(), PauseHUDWidgetClass));
-	MatchStateWidgets.Add(ETPSMatchState::GameOver, CreateWidget<UUserWidget>(GetWorld(), GameOVerHUDWidgetClass));
+	MatchStateWidgets.Add(ETPSMatchState::InProgress, CreateWidget<UTPSBaseWidget>(GetWorld(), PlayHUDWidgetClass));
+	MatchStateWidgets.Add(ETPSMatchState::Pause, CreateWidget<UTPSBaseWidget>(GetWorld(), PauseHUDWidgetClass));
+	MatchStateWidgets.Add(ETPSMatchState::GameOver, CreateWidget<UTPSBaseWidget>(GetWorld(), GameOVerHUDWidgetClass));
 
 	for (auto Widget : MatchStateWidgets)
 	{
@@ -73,7 +72,11 @@ void ATPSGameHUD::OnMatchStateChanged(const ETPSMatchState MatchState)
 	if (MatchStateWidgets.Contains(MatchState)) { CurrentMatchStateWidget = MatchStateWidgets[MatchState]; }
 
 	// 然后显示新的Widget
-	if (CurrentMatchStateWidget) { CurrentMatchStateWidget->SetVisibility(ESlateVisibility::Visible); }
+	if (CurrentMatchStateWidget)
+	{
+		CurrentMatchStateWidget->SetVisibility(ESlateVisibility::Visible);
+		CurrentMatchStateWidget->Show();
+	}
 
 	UE_LOG(MyATPSGameHUDLog, Error, TEXT("GameStateChanged: %s"), *UEnum::GetValueAsString(MatchState));
 }

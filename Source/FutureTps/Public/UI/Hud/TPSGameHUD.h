@@ -7,6 +7,7 @@
 #include "TPSGameHUD.generated.h"
 
 
+class UTPSBaseWidget;
 enum class ETPSMatchState : uint8;
 class UUserWidget;
 /**
@@ -37,10 +38,10 @@ protected:
 
 private:
 	UPROPERTY()
-	TMap<ETPSMatchState, UUserWidget *> MatchStateWidgets;
+	TMap<ETPSMatchState, UTPSBaseWidget *> MatchStateWidgets;
 
 	UPROPERTY()
-	UUserWidget *CurrentMatchStateWidget = nullptr;
+	UTPSBaseWidget *CurrentMatchStateWidget = nullptr;
 
 	void DrawCrossHair();
 

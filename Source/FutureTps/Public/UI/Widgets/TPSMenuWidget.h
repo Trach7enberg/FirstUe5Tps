@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "TPSBaseWidget.h"
 #include "CoreTypes/CoreType.h"
 #include "TPSMenuWidget.generated.h"
 
@@ -15,7 +15,7 @@ class UButton;
  * 主菜单UI小部件
  */
 UCLASS()
-class FUTURETPS_API UTPSMenuWidget : public UUserWidget
+class FUTURETPS_API UTPSMenuWidget : public UTPSBaseWidget
 {
 	GENERATED_BODY()
 
