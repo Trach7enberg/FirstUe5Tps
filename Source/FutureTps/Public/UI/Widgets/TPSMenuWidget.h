@@ -30,9 +30,17 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UHorizontalBox *LevelItemArea;
 
+	// 预加载关卡时的动画,动画结束时关卡则加载完毕
+	UPROPERTY(meta=(BindWidgetAnim),Transient)
+	UWidgetAnimation* PreLoadLevelAnimation;
+	
 	// 关卡选择区域下的关卡item UI的类
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=UI)
 	TSubclassOf<UUserWidget> LevelSelectItemWidgetClass;
+
+	/// @brief 当前类任何动画播放完毕时都会调用这个函数
+	/// @param Animation 
+	virtual void OnAnimationFinished_Implementation(const UWidgetAnimation *Animation) override;
 
 private:
 	// TArray<UTPSLevelSelectItemWidget *> LevelItemWidgets;
@@ -41,10 +49,12 @@ private:
 
 	// 上一次选择的关卡名字Tmap的索引,用于关闭上一次选择的关卡的红框
 	FName LastSelected ;
-	
+
+	/// 开始按钮点击之后的回调函数
 	UFUNCTION()
 	void OnStartGame();
 
+	/// 初始化选择关卡区域的关卡项目数量
 	void InitLevelItems();
 
 	// 选择光卡的按钮被按下时就会调用该函数

@@ -18,8 +18,10 @@ void UTPSMenuWidget::NativeOnInitialized()
 	InitLevelItems();
 }
 
-void UTPSMenuWidget::OnStartGame()
+void UTPSMenuWidget::OnAnimationFinished_Implementation(const UWidgetAnimation *Animation)
 {
+	if (Animation != PreLoadLevelAnimation) { return; }
+
 	if (!GetWorld()) { return; }
 
 
@@ -31,7 +33,10 @@ void UTPSMenuWidget::OnStartGame()
 
 	UGameplayStatics::OpenLevel(this, StartLevel.LevelName);
 
+	Super::OnAnimationFinished_Implementation(Animation);
 }
+
+void UTPSMenuWidget::OnStartGame() { PlayAnimation(PreLoadLevelAnimation); }
 
 void UTPSMenuWidget::InitLevelItems()
 {
@@ -93,7 +98,10 @@ void UTPSMenuWidget::OnSelectedLevelItem(const FLevelData &Data)
 	{
 		LevelItemWidgets[Data.LevelName]->SetSelected(true);
 
-		if (!LastSelected.IsNone() && LastSelected != Data.LevelName) { LevelItemWidgets[LastSelected]->SetSelected(false); }
+		if (!LastSelected.IsNone() && LastSelected != Data.LevelName)
+		{
+			LevelItemWidgets[LastSelected]->SetSelected(false);
+		}
 
 		LastSelected = (Data.LevelName);
 	}

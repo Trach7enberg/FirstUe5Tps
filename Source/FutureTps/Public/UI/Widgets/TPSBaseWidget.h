@@ -15,10 +15,11 @@ class FUTURETPS_API UTPSBaseWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	// 播放打开界面时相应的一系列动画
 	void Show();
 
 protected:
-	// 
+	// 播放显示动画
 	UPROPERTY(meta=(BindWidgetAnim), Transient)
 	UWidgetAnimation *ShowAnimation;
 };
