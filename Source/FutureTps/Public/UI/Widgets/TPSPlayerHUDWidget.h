@@ -60,7 +60,7 @@ public:
 
 	/// 是否在换弹
 	/// @return 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category=UI)
 	ESlateVisibility IsReloading() const;
 
 
