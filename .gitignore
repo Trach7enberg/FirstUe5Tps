@@ -2,12 +2,15 @@ Binaries
 DerivedDataCache
 Intermediate
 Saved
+# 以下不上传到GITHUB,容量太大
+/Content/
 /Content/ExternalContent/
 /Content/StaticMeshes/
 /Content/__ExternalActors__/
 /Content/__ExternalObjects__/
 /Content/VFX/
 /Content/Weapons/
+#
 .vscode
 .vs
 *.VC.db
