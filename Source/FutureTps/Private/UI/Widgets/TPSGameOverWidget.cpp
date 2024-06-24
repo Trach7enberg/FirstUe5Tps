@@ -52,7 +52,8 @@ void UTPSGameOverWidget::UpdatePlayerStat()
 		PlayerStatisticsRow->SetKillsText(FString::FromInt(PlayerState->GetKillSum()));
 		PlayerStatisticsRow->SetDeathsText(FString::FromInt(PlayerState->GetDeathSum()));
 		PlayerStatisticsRow->SetPlayerIndicatorImageVisibility(Controller->IsPlayerController());
-
+		PlayerStatisticsRow->SetTeamImageColor(PlayerState->GetTeamColor());
+		
 		StatisticsArea->AddChildToVerticalBox(PlayerStatisticsRow);
 	}
 }

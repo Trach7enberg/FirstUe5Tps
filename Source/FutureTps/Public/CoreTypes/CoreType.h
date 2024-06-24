@@ -142,7 +142,7 @@ struct FGameData
 	// 队伍颜色的数组,默认有3种颜色
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Game)
 	TArray<FLinearColor> TeamColors{
-		FLinearColor(0.847458f, 0.231807f, 0.010489f, 0.0f),
+		FLinearColor(0.847458f, 0.231807f, 0.010489f, 1.0f),
 		FLinearColor::Green,
 		FLinearColor::Blue,
 	};

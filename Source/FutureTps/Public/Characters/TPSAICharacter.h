@@ -29,7 +29,7 @@ protected:
 	UWidgetComponent *HealthBarWidgetComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Components)
-	float HealthBarVisibilityDistance = 800.f;
+	float HealthBarVisibilityDistance = 2800.f;
 
 	virtual void BeginPlay() override;
 

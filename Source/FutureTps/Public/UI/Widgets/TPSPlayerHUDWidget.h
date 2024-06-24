@@ -6,11 +6,12 @@
 #include "Blueprint/UserWidget.h"
 #include "TPSPlayerHUDWidget.generated.h"
 
+class UProgressBar;
 struct FAmmoData;
 struct FWeaponUIData;
 
 /**
- * 玩家UI类,玩家的UIWidget蓝图继承自这个类 
+ * 玩家主显示UI类,玩家的UIWidget蓝图继承自这个类 
  */
 UCLASS()
 class FUTURETPS_API UTPSPlayerHUDWidget : public UUserWidget
@@ -36,10 +37,15 @@ public:
 	bool GetCurrentWeaponAmmo(FAmmoData &AmmoData) const;
 
 
-	/// 获取已经处理好的弹药信息文本
+	/// 获取已经处理好的弹药(弹匣中的子弹)信息文本
 	/// @return 返回显示弹药的文本
 	UFUNCTION(BlueprintCallable, Category=UI)
-	FText GetCurrentAmmoText() const;
+	FText GetCurrentBulletsText() const;
+
+	/// 获取已经处理好的弹药(弹匣)信息文本
+	/// @return
+	UFUNCTION(BlueprintCallable, Category=UI)
+	FText GetCurrentMagzsText() const;
 
 
 	/// 设置玩家正常游玩视角时UI的visibility
@@ -66,24 +72,42 @@ protected:
 	/// 初始化函数,Initialize 成功执行初始化时候会调用这个函数
 	virtual void NativeOnInitialized() override;
 
+	UPROPERTY(meta=(BindWidget))
+	UProgressBar *PlayerHealthBar;
+
+	// 生命值小于等于这个数会改变颜色
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=UI)
+	float BarColorChangePercent = 0.3f;
+
+	// 生命值满时的颜色
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=UI)
+	FLinearColor FullHealthColor = FLinearColor::Black;
+
+	// 生命值低于BarColorChangePercent时的颜色
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=UI)
+	FLinearColor LowHealthColor = FLinearColor::Red;
+
 private:
 	/// 
 	/// @return 
-	UFUNCTION(BlueprintCallable, Category=UI)
 	bool IsPlayerAlive() const;
 
 	/// 
 	/// @return 
-	UFUNCTION(BlueprintCallable, Category=UI)
 	bool IsPlayerSpectating() const;
-	
-	
+
+
 	/// 当生命值变化时生命组件回调的函数
-	/// @param health 
+	/// @param Health 
 	/// @param BIsDecreaseHealth 
 	UFUNCTION(BlueprintCallable, Category=UI)
-	void HealthChanged(float health, bool BIsDecreaseHealth);
+	void HealthChanged(float Health, bool BIsDecreaseHealth);
 
+	/// 当玩家控制新的角色的时候(比如死亡复活之后)会触发这个回调函数
+	/// @param NewPawn 
 	UFUNCTION()
-	void OnNewPawn( APawn* NewPawn);
+	void OnNewPawn(APawn *NewPawn);
+
+	/// 更新玩家生命值UI的颜色和百分比
+	void UpdatePlayerHealthBar() const;
 };

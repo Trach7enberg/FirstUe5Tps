@@ -1,9 +1,9 @@
 // FutureTPS Game All Rights Reserved
 
 
-
 #include "UI/Widgets/TPSPlayerHUDWidget.h"
 
+#include "Components/ProgressBar.h"
 #include "Components/TPSWeaponLogicComponent.h"
 #include "Components/TPSHealthComponent.h"
 #include "TPSUtil/TPSUtils.h"
@@ -23,6 +23,8 @@ void UTPSPlayerHUDWidget::NativeOnInitialized()
 		// 首次需要手动调用一次,因为控制器的OnPossess函数在 本类的Initialize之前调用(可以通过覆写OnPossess打日志来验证)
 		OnNewPawn(GetOwningPlayer()->GetPawn());
 	}
+
+	if (PlayerHealthBar) { PlayerHealthBar->SetFillColorAndOpacity(FullHealthColor); }
 }
 
 float UTPSPlayerHUDWidget::GetHealthPercent() const
@@ -31,6 +33,8 @@ float UTPSPlayerHUDWidget::GetHealthPercent() const
 		GetOwningPlayerPawn());
 
 	if (!HealthComponent) { return 0.0f; }
+
+
 	return HealthComponent->GetHealthPercent();
 }
 
@@ -55,20 +59,24 @@ bool UTPSPlayerHUDWidget::GetCurrentWeaponAmmo(FAmmoData &AmmoData) const
 	return WeaponLogicComponent->GetWeaponAmmo(AmmoData);
 }
 
-FText UTPSPlayerHUDWidget::GetCurrentAmmoText() const
+FText UTPSPlayerHUDWidget::GetCurrentBulletsText() const
 {
 
 	FAmmoData AmmoData;
 	if (!GetCurrentWeaponAmmo(AmmoData)) { return FText::FromString(""); }
 
-	const FString String = FString::FromInt(AmmoData.Bullets);
 
-	if (AmmoData.InfiniteMag) { return FText::FromString(String + "/" + TEXT("∞")); }
-
-	return FText::FromString(String + "/" + FString::FromInt(AmmoData.Magazines));
+	return FText::FromString(FString::FromInt(AmmoData.Bullets));
 }
 
+FText UTPSPlayerHUDWidget::GetCurrentMagzsText() const
+{
+	FAmmoData AmmoData;
+	if (!GetCurrentWeaponAmmo(AmmoData)) { return FText::FromString(""); }
 
+
+	return FText::FromString(AmmoData.InfiniteMag ? TEXT("∞") : FString::FromInt(AmmoData.Magazines));
+}
 
 
 bool UTPSPlayerHUDWidget::IsPlayerAlive() const
@@ -113,19 +121,37 @@ ESlateVisibility UTPSPlayerHUDWidget::IsReloading() const
 void UTPSPlayerHUDWidget::HealthChanged(float Health, bool BIsDecreaseHealth)
 {
 	OnHealthChanged(Health, BIsDecreaseHealth);
+	UpdatePlayerHealthBar();
 }
 
 void UTPSPlayerHUDWidget::OnNewPawn(APawn *NewPawn)
 {
-	if (!NewPawn)
-	{
-		// UE_LOG(MyUTPSPlayerHUDWidgetLog, Error, TEXT("NewPawn Cant be NUll!"));
-	}
-	UTPSHealthComponent *HealthComponent = FTPSUtils::GetComponentByCurrentPlayer<UTPSHealthComponent>(NewPawn);
-	if (HealthComponent)
-	{
-		// 绑定生命组件的委托 (收到伤害时的委托)
-		HealthComponent->OnHealthChanged.AddUObject(this, &UTPSPlayerHUDWidget::HealthChanged);
-	}
+	if (!NewPawn) { return; }
 
+	UTPSHealthComponent *HealthComponent = FTPSUtils::GetComponentByCurrentPlayer<UTPSHealthComponent>(NewPawn);
+	if (!HealthComponent) { return; }
+
+	// 绑定生命组件的委托 (收到伤害时的委托)
+	HealthComponent->OnHealthChanged.AddUObject(this, &UTPSPlayerHUDWidget::HealthChanged);
+
+
+	// 首次进入游戏、复活时,需要更新一下生命值UI
+	// 由于有时候GetHealthPercent()会返回0,所以这里要判断一下角色是否死亡,\\ TODO 不然会老是把生命值UI显示为0( 莫名其妙的bug,待查)
+	if (!HealthComponent->IsDead()) { UpdatePlayerHealthBar(); }
+
+}
+
+void UTPSPlayerHUDWidget::UpdatePlayerHealthBar() const
+{
+	if (!PlayerHealthBar) { return; }
+
+	const auto Percent = GetHealthPercent();
+
+
+	const auto Color = (Percent <= BarColorChangePercent)
+		? LowHealthColor
+		: FullHealthColor;
+
+	PlayerHealthBar->SetFillColorAndOpacity(Color);
+	PlayerHealthBar->SetPercent(Percent);
 }

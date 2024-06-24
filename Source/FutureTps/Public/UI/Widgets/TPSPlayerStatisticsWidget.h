@@ -17,14 +17,19 @@ class FUTURETPS_API UTPSPlayerStatisticsWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	void SetTeamNameText(const FString & TeamName) const;
-	void SetPlayerNameText(const FString & PlayerName) const;
-	void SetKillsText(const FString & Kills) const;
-	void SetDeathsText(const FString & Deaths) const;
+	void SetTeamNameText(const FString &TeamName) const;
+	void SetPlayerNameText(const FString &PlayerName) const;
+	void SetKillsText(const FString &Kills) const;
+	void SetDeathsText(const FString &Deaths) const;
 
-	void SetPlayerIndicatorImageVisibility(bool Visible=false) const;
+	void SetPlayerIndicatorImageVisibility(bool Visible = false) const;
+
+	void SetTeamImageColor(const FLinearColor &Color) const;
+
 
 protected:
+	
+	
 	/// (自动绑定到蓝图中的UI组件)
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock *TeamNameText;
@@ -41,7 +46,11 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock *DeathsText;
 
-	/// (自动绑定到蓝图中的UI组件)
+	/// 指示战绩显示中是玩家的图片(自动绑定到蓝图中的UI组件)
 	UPROPERTY(meta=(BindWidget))
-	UImage * PlayerIndicatorImage;
+	UImage *PlayerIndicatorImage;
+
+	/// 表明队伍的图标
+	UPROPERTY(meta=(BindWidget))
+	UImage *TeamImage;
 };
