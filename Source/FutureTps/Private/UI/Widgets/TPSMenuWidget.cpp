@@ -7,6 +7,7 @@
 #include "Components/HorizontalBox.h"
 #include "GameInstances/TPSGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 #include "UI/Widgets/TPSLevelSelectItemWidget.h"
 
 DEFINE_LOG_CATEGORY_STATIC(MyUTPSMenuWidgetLog, All, All);
@@ -36,7 +37,14 @@ void UTPSMenuWidget::OnAnimationFinished_Implementation(const UWidgetAnimation *
 	Super::OnAnimationFinished_Implementation(Animation);
 }
 
-void UTPSMenuWidget::OnStartGame() { PlayAnimation(PreLoadLevelAnimation); }
+void UTPSMenuWidget::OnStartGame()
+{
+	PlayAnimation(PreLoadLevelAnimation);
+	
+	if (!GetWorld() && !StartGameSound) { return; }
+	
+	UGameplayStatics::PlaySound2D(GetWorld(), StartGameSound);
+}
 
 void UTPSMenuWidget::InitLevelItems()
 {

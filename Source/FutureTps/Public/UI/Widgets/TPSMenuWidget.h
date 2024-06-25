@@ -11,6 +11,7 @@ class UTPSLevelSelectItemWidget;
 class UTPSGameInstance;
 class UHorizontalBox;
 class UButton;
+class USoundCue;
 /**
  * 主菜单UI小部件
  */
@@ -33,6 +34,10 @@ protected:
 	// 预加载关卡时的动画,动画结束时关卡则加载完毕
 	UPROPERTY(meta=(BindWidgetAnim),Transient)
 	UWidgetAnimation* PreLoadLevelAnimation;
+
+	// 按下开始游戏按钮后播放的声音
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category=Sound)
+	USoundCue *StartGameSound;
 	
 	// 关卡选择区域下的关卡item UI的类
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=UI)

@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "TPSBaseWidget.generated.h"
 
+class USoundCue;
+
 /**
  * 本游戏所有UI的基类
  */
@@ -22,4 +24,8 @@ protected:
 	// 播放显示动画
 	UPROPERTY(meta=(BindWidgetAnim), Transient)
 	UWidgetAnimation *ShowAnimation;
+
+	// 切换widget时的声音
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category=Sound)
+	USoundCue* OpenWidgetSound;
 };
