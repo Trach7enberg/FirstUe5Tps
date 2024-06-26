@@ -6,6 +6,7 @@
 #include "TPSBaseWidget.h"
 #include "TPSPlayerHUDWidget.generated.h"
 
+class ATPSBasePlayerState;
 class UProgressBar;
 struct FAmmoData;
 struct FWeaponUIData;
@@ -36,6 +37,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category=UI)
 	bool GetCurrentWeaponAmmo(FAmmoData &AmmoData) const;
 
+	
+	UFUNCTION(BlueprintCallable, Category=UI)
+	FText GetKillText() const;
 
 	/// 获取已经处理好的弹药(弹匣中的子弹)信息文本
 	/// @return 返回显示弹药的文本
@@ -112,6 +116,10 @@ private:
 	UFUNCTION()
 	void OnNewPawn(APawn *NewPawn);
 
+
+	/// 获取玩家状态
+	ATPSBasePlayerState *GetPlayerState() const;
+	
 	/// 更新玩家生命值UI的颜色和百分比
 	void UpdatePlayerHealthBar() const;
 };

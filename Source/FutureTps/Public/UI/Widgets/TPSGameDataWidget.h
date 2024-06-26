@@ -23,8 +23,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category=UI)
 	FText GetRoundText() const;
 
-	UFUNCTION(BlueprintCallable, Category=UI)
-	FText GetKillText() const;
+	
 
 	UFUNCTION(BlueprintCallable, Category=UI)
 	FText GetCountDownText() const;

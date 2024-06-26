@@ -43,7 +43,7 @@ bool UTPSPlayerHUDWidget::GetCurrentWeaponUIData(FWeaponUIData &WeaponUIData) co
 	const UTPSWeaponLogicComponent *WeaponLogicComponent = FTPSUtils::GetComponentByCurrentPlayer<
 		UTPSWeaponLogicComponent>(GetOwningPlayerPawn());
 	if (!WeaponLogicComponent) { return false; }
-	
+
 	return WeaponLogicComponent->GetWeaponUIData(WeaponUIData);
 }
 
@@ -56,6 +56,15 @@ bool UTPSPlayerHUDWidget::GetCurrentWeaponAmmo(FAmmoData &AmmoData) const
 
 
 	return WeaponLogicComponent->GetWeaponAmmo(AmmoData);
+}
+
+FText UTPSPlayerHUDWidget::GetKillText() const
+{
+	const auto PlayerState = GetPlayerState();
+	if (!PlayerState) { return FText(); }
+
+
+	return FText::FromString(FString::FromInt(PlayerState->GetKillSum()));
 }
 
 FText UTPSPlayerHUDWidget::GetCurrentBulletsText() const
@@ -145,6 +154,13 @@ void UTPSPlayerHUDWidget::OnNewPawn(APawn *NewPawn)
 	// 由于有时候GetHealthPercent()会返回0,所以这里要判断一下角色是否死亡,\\ TODO 不然会老是把生命值UI显示为0( 莫名其妙的bug,待查)
 	if (!HealthComponent->IsDead()) { UpdatePlayerHealthBar(); }
 
+}
+
+ATPSBasePlayerState *UTPSPlayerHUDWidget::GetPlayerState() const
+{
+	return GetOwningPlayerPawn()
+		? GetOwningPlayerPawn()->GetController()->GetPlayerState<ATPSBasePlayerState>()
+		: nullptr;
 }
 
 void UTPSPlayerHUDWidget::UpdatePlayerHealthBar() const

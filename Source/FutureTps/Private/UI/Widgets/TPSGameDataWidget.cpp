@@ -18,16 +18,6 @@ FText UTPSGameDataWidget::GetRoundText() const
 		FString::FromInt(GameMode->GetCurrentRound()) + " / " + FString::FromInt(GameMode->GetMaxRound()));
 }
 
-FText UTPSGameDataWidget::GetKillText() const
-{
-
-
-	const auto PlayerState = GetPlayerState();
-	if (!PlayerState) { return FText(); }
-
-
-	return FText::FromString(FString::FromInt(PlayerState->GetKillSum()));
-}
 
 FText UTPSGameDataWidget::GetCountDownText() const
 {
