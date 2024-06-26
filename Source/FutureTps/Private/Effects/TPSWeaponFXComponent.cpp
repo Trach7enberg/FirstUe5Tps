@@ -6,10 +6,11 @@
 #include "Components/DecalComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Sound/SoundCue.h"
 
 DEFINE_LOG_CATEGORY_STATIC(MyUWeaponFXComponentLog, All, All);
 
-UWeaponFXComponent::UWeaponFXComponent() { PrimaryComponentTick.bCanEverTick = true; }
+UWeaponFXComponent::UWeaponFXComponent() { PrimaryComponentTick.bCanEverTick = false; }
 
 
 // Called when the game starts
@@ -57,4 +58,6 @@ void UWeaponFXComponent::PlayImpactFX(const FHitResult &Hit) const
 	// 设置生成的贴花在经过LifeTime秒后持续消散FadeOutTime秒,最后销毁
 	if (DecalComponent) { DecalComponent->SetFadeOut(ImpactData.DecalData.LifeTime, ImpactData.DecalData.FadeOutTime); }
 
+	// 播放冲击声音
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactData.ImpactSoundCue, Hit.ImpactPoint);
 }

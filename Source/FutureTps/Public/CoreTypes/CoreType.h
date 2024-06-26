@@ -11,6 +11,7 @@
 DECLARE_MULTICAST_DELEGATE(FOnSwitchWhenChangeMagz);
 
 class ATPSBaseWeapon;
+class USoundCue;
 
 // 武器结构
 USTRUCT(BlueprintType)
@@ -96,7 +97,7 @@ struct FDecalData
 
 };
 
-/// 子弹冲击物体时的特效
+/// 子弹冲击物体时的特效、声音
 USTRUCT(BlueprintType)
 struct FImpactData
 {
@@ -109,6 +110,9 @@ struct FImpactData
 	// 贴花结构
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=VFX)
 	FDecalData DecalData;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Sound)
+	USoundCue* ImpactSoundCue;
 };
 
 /// 游戏模式的数据结构,存储着游戏模式的配置信息

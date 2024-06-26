@@ -22,5 +22,7 @@ void ATPSHealthPickUp::Pickup(AActor *Actor)
 		UTPSHealthComponent>(Actor);
 	if (!HealthComponent) { return; }
 
+	
+	
 	HealthComponent->Heal(ResupplyPercent);
 }

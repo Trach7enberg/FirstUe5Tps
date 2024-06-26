@@ -4,6 +4,8 @@
 #include "PickUp/TPSBasePickUp.h"
 
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 DEFINE_LOG_CATEGORY_STATIC(MyATPSBasePickUpLog, Error, Error);
 
@@ -69,6 +71,9 @@ void ATPSBasePickUp::Pickup(AActor *Actor)
 	{
 		GetRootComponent()->SetVisibility(false, true);
 		this->SetActorEnableCollision(false);
+		// 播放拾取音效
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), PickupSound, GetActorLocation());
+
 		RespawnHandle();
 	}
 }

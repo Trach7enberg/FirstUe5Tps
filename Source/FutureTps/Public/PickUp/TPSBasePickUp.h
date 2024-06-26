@@ -7,6 +7,7 @@
 #include "TPSBasePickUp.generated.h"
 
 class USphereComponent;
+class USoundCue;
 /**
  * 拾取物(血包和弹药包)的基类
  */
@@ -32,6 +33,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Pickup)
 	UStaticMeshComponent *PickupStaticMesh;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Sound)
+	USoundCue* PickupSound;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Pickup)
 	float SphereRadius = 50.f;
