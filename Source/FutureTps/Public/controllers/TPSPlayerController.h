@@ -36,4 +36,7 @@ private:
 	/// 当游戏状态改变时调用该函数,主要作用是根据游戏状态改变鼠标是否显示
 	/// @param MatchState 
 	void OnMatchStateChanged(ETPSMatchState MatchState);
+
+	/// 静音函数
+	void OnMuteSound();
 };

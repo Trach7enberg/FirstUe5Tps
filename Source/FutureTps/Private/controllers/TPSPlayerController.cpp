@@ -5,7 +5,10 @@
 
 #include "Components/TPSRespawnComponent.h"
 #include "GameFramework/GameModeBase.h"
+#include "GameInstances/TPSGameInstance.h"
 #include "GameMode/TPSGameModeBase.h"
+
+DEFINE_LOG_CATEGORY_STATIC(MyATPSPlayerControllerLog, All, All);
 
 ATPSPlayerController::ATPSPlayerController()
 {
@@ -19,7 +22,7 @@ void ATPSPlayerController::SetupInputComponent()
 	if (!InputComponent) { return; }
 
 	InputComponent->BindAction("GamePause", IE_Pressed, this, &ATPSPlayerController::PauseGame);
-
+	InputComponent->BindAction("MuteSound", IE_Pressed, this, &ATPSPlayerController::OnMuteSound);
 }
 
 
@@ -52,4 +55,15 @@ void ATPSPlayerController::OnMatchStateChanged(ETPSMatchState MatchState)
 		SetInputMode(FInputModeUIOnly());
 		bShowMouseCursor = true;
 	}
+}
+
+void ATPSPlayerController::OnMuteSound()
+{
+	if (!GetWorld()) { return; }
+
+	const auto GameInstance = GetWorld()->GetGameInstance<UTPSGameInstance>();
+	if (!GameInstance) { return; }
+
+	// UE_LOG(MyATPSPlayerControllerLog, Error, TEXT("Mute sound"));
+	GameInstance->ToggleVolume();
 }
