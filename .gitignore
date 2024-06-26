@@ -3,7 +3,7 @@ DerivedDataCache
 Intermediate
 Saved
 # 以下不上传到GITHUB,容量太大
-/Content/
+Content
 /Content/ExternalContent/
 /Content/StaticMeshes/
 /Content/__ExternalActors__/

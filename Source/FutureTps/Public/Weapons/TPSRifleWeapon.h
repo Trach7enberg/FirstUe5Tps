@@ -8,7 +8,7 @@
 
 class UWeaponFXComponent;
 class UNiagaraSystem;
-
+class UAudioComponent;
 /**
  *  步枪类
  */
@@ -35,13 +35,12 @@ protected:
 	// 子弹轨迹特效类资源
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=VFX)
 	UNiagaraSystem *BulletTraceNiagaraSystem;
-
+	
 	// 这个是Niagara系统中创建的变量的名字
 	// 我们将通过这个名字修改特效系统里的变量值
 	UPROPERTY(VisibleAnywhere, Category=VFX)
 	FName BeamEndName = "TraceTarget";
-
-
+	
 	// 自动开火速率
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta=(ClampMin = 0.01f, ClampMax=0.1f))
 	float FireRate = 0.05f;
@@ -68,12 +67,22 @@ private:
 	UPROPERTY()
 	UNiagaraComponent *RifleMuzzleFX = nullptr;
 
+	// TODO 有bug待修复,SpawnSoundAttach返回的组件不会跟随武器移动
+	UPROPERTY()
+	UAudioComponent *FireSoundAudioComponent = nullptr;
 
 	/// 初始化(生成)枪口特效 暂存到RifleMuzzleFX
 	void InitRifleMuzzleFX();
 
+	/// 初始化(获得)开火声音 暂存到FireSoundAudioComponent
+	void InitRifleFireSound();
+
+	/// 是否播放开火声音
+	/// @param Active 
+	void SetSoundActive(bool Active) const;
+
 	/// 设置枪口特效可见度
-	void SetRifleMuzzleFXVisiblity(bool Visible) const;
+	void SetFXActive(bool Visible) const;
 
 	/// 生成子弹轨迹特效
 	/// @param Start 

@@ -13,6 +13,7 @@
 class USphereComponent;
 class UTPSWeaponLogicComponent;
 class UTPSHealthComponent;
+class USoundCue;
 
 /**
  * 玩家角色类
@@ -96,6 +97,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Animation)
 	UAnimMontage *DeathAnimMontage;
 
+	// 死亡音效
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Sound)
+	USoundCue * DeathSound;
 
 	// 落地速度Velocity(Z轴)
 	UPROPERTY(EditDefaultsOnly, Category=Damage)

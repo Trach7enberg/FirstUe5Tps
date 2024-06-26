@@ -1,8 +1,12 @@
 // FutureTPS Game All Rights Reserved
 
-DEFINE_LOG_CATEGORY_STATIC(MyATPSParticleLauncherWeaponLog, All, All)
 
 #include "Weapons/TPSParticleLauncherWeapon.h"
+
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
+
+DEFINE_LOG_CATEGORY_STATIC(MyATPSParticleLauncherWeaponLog, All, All)
 
 ATPSParticleLauncherWeapon::ATPSParticleLauncherWeapon()
 {
@@ -24,7 +28,14 @@ void ATPSParticleLauncherWeapon::AutoFire() {}
 void ATPSParticleLauncherWeapon::MakeShot()
 {
 	BIsUnderFire = true;
-	if (!GetWorld() || IsBulletEmpty()) { return; }
+	if (!GetWorld()) { return; }
+
+	if (IsBulletEmpty())
+	{
+		// 播放没子弹时候的声音
+		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), NoAmmoSound, GetActorLocation());
+		return;
+	}
 
 	UE_LOG(MyATPSParticleLauncherWeaponLog, Error, TEXT("Fire"));
 
@@ -65,4 +76,5 @@ void ATPSParticleLauncherWeapon::MakeShot()
 
 	// 发射器枪口火花只需要播放一次就够了
 	SpawnMuzzleFXComponent();
+	UGameplayStatics::SpawnSoundAttached(FireSound, WeaponSkeletalMeshComponent, MuzzlePosition);
 }

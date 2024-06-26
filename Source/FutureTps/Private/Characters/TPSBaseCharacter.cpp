@@ -7,6 +7,8 @@
 #include "Components/TPSHealthComponent.h"
 #include "Components/TPSWeaponLogicComponent.h"
 #include "Components/TPSCharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 DEFINE_LOG_CATEGORY_STATIC(MyATPSBaseCharacterLog, All, All)
 
@@ -206,7 +208,10 @@ void ATPSBaseCharacter::Turn(float value)
 }
 
 
-void ATPSBaseCharacter::RushBegin() { BIsRush = (MoveForwardValue > 0 && !GetVelocity().IsZero()); }
+void ATPSBaseCharacter::RushBegin()
+{
+	BIsRush = (MoveForwardValue > 0 && !GetVelocity().IsZero() && !HealthComponent->IsDead());
+}
 
 void ATPSBaseCharacter::RushEnd() { BIsRush = false; }
 
@@ -222,7 +227,13 @@ void ATPSBaseCharacter::OnDeath()
 	// TODO 如果角色在半空中死亡会浮在空中,待修复
 	// PlayAnimMontage(DeathAnimMontage);
 
+	// 死亡之后不允许冲刺,比如角色生前是按着冲刺死亡,这时候就要关掉
+	BIsRush = false;
 	BCanRotatingCamera = false;
+
+	// 播放死亡声音
+	if (GetWorld()) { UGameplayStatics::PlaySoundAtLocation(GetWorld(), DeathSound, GetActorLocation()); }
+
 	GetCharacterMovement()->DisableMovement();
 	SetLifeSpan(LifeSpanOnDeath);
 

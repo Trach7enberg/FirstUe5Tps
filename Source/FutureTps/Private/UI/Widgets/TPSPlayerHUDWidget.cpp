@@ -43,8 +43,7 @@ bool UTPSPlayerHUDWidget::GetCurrentWeaponUIData(FWeaponUIData &WeaponUIData) co
 	const UTPSWeaponLogicComponent *WeaponLogicComponent = FTPSUtils::GetComponentByCurrentPlayer<
 		UTPSWeaponLogicComponent>(GetOwningPlayerPawn());
 	if (!WeaponLogicComponent) { return false; }
-
-
+	
 	return WeaponLogicComponent->GetWeaponUIData(WeaponUIData);
 }
 

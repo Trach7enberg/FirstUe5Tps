@@ -6,6 +6,11 @@
 #include "Effects/TPSWeaponFXComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
+
+#include "Components/AudioComponent.h"
+#include "TPSUtil/TPSUtils.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(MyATPSRifleWeaponLog, All, All)
@@ -22,6 +27,23 @@ void ATPSRifleWeapon::BeginPlay()
 	Super::BeginPlay();
 	check(WeaponFXComponent);
 	InitRifleMuzzleFX();
+
+
+	// TArray<USceneComponent *> ChildComponents;
+	//
+	// WeaponSkeletalMeshComponent->GetChildrenComponents(true, ChildComponents);
+	// UE_LOG(MyATPSRifleWeaponLog, Error, TEXT("%d"), ChildComponents.Num());
+	// for (auto ChildComponent : ChildComponents)
+	// {
+	// 	if(const auto c = Cast<UAudioComponent>(ChildComponent))
+	// 	{
+	// 		FireSoundAudioComponent = c;
+	// 		c->Stop();
+	// 		break;
+	// 	}
+	// }
+
+	InitRifleFireSound();
 }
 
 void ATPSRifleWeapon::Fire() { AutoFire(); }
@@ -30,9 +52,8 @@ void ATPSRifleWeapon::SemiFire()
 {
 	if (GetOwner())
 	{
-
 		// 防止角色死亡后左键没有松手,还会继续开枪,需要清除定时器
-		if (IsBulletEmpty() || GetOwner()->GetLifeSpan() != 0.0f)
+		if (GetOwner()->GetLifeSpan() != 0.0f)
 		{
 			// UE_LOG(MyATPSRifleWeaponLog, Error, TEXT("Empty>?"));
 			StopFire();
@@ -46,14 +67,17 @@ void ATPSRifleWeapon::StopFire()
 {
 	if (!GetWorld()) { return; }
 	GetWorld()->GetTimerManager().ClearTimer(AutoFireTimer);
+
+	SetSoundActive(false);
+
 	// UE_LOG(MyATPSRifleWeaponLog, Error, TEXT("StopFire"));
-	SetRifleMuzzleFXVisiblity(false);
+	SetFXActive(false);
 	BIsUnderFire = false;
 }
 
 void ATPSRifleWeapon::AutoFire()
 {
-	if (!GetWorld() || IsBulletEmpty()) { return; }
+	if (!GetWorld()) { return; }
 
 	if (!GetWorld()->GetTimerManager().IsTimerActive(AutoFireTimer))
 	{
@@ -70,11 +94,19 @@ bool ATPSRifleWeapon::GetTraceData(FVector &TraceStart, FVector &TraceEnd, float
 void ATPSRifleWeapon::MakeShot()
 {
 
-	if (!GetWorld() || IsBulletEmpty()) { return; }
-	// UE_LOG(MyATPSRifleWeaponLog, Error, TEXT("Fire"));
-	BIsUnderFire = true;	
-	SetRifleMuzzleFXVisiblity(true);
+	if (!GetWorld()) { return; }
 
+	if (IsBulletEmpty())
+	{
+		StopFire();
+		// 播放没子弹时候的声音
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), NoAmmoSound, GetActorLocation());
+		return;
+	}
+
+	// UE_LOG(MyATPSRifleWeaponLog, Error, TEXT("Fire"));
+	BIsUnderFire = true;
+	SetFXActive(true);
 
 	FVector StartLocation;
 	FVector EndLocation;
@@ -113,6 +145,8 @@ void ATPSRifleWeapon::MakeShot()
 
 	SpawnBulletTraceFX(GetMuzzleWorldTransform().GetLocation(), EndLocation);
 	DecreaseBullet();
+	SetSoundActive(true);
+
 }
 
 void ATPSRifleWeapon::MakeDamage(const FHitResult &HitResult)
@@ -127,10 +161,30 @@ void ATPSRifleWeapon::MakeDamage(const FHitResult &HitResult)
 void ATPSRifleWeapon::InitRifleMuzzleFX()
 {
 	if (!RifleMuzzleFX) { RifleMuzzleFX = SpawnMuzzleFXComponent(); }
-	SetRifleMuzzleFXVisiblity(false);
+	SetFXActive(false);
 }
 
-void ATPSRifleWeapon::SetRifleMuzzleFXVisiblity(bool Visible) const
+void ATPSRifleWeapon::InitRifleFireSound()
+{
+	if (FireSoundAudioComponent) { return; }
+
+	if (const auto AudioComp = Cast<UAudioComponent>(WeaponSkeletalMeshComponent->GetChildComponent(0)))
+	{
+		FireSoundAudioComponent = AudioComp;
+		if (!FireSoundAudioComponent->GetSound()) { FireSoundAudioComponent->SetSound(FireSound); }
+		SetSoundActive(false);
+	}
+}
+
+void ATPSRifleWeapon::SetSoundActive(const bool Active) const
+{
+	if (!FireSoundAudioComponent) { return; }
+	Active ? FireSoundAudioComponent->Play() : FireSoundAudioComponent->Stop();
+
+
+}
+
+void ATPSRifleWeapon::SetFXActive(bool Visible) const
 {
 	if (!RifleMuzzleFX) { return; }
 

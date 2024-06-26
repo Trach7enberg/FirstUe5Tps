@@ -9,6 +9,7 @@
 
 class UNiagaraComponent;
 class UNiagaraSystem;
+class USoundCue;
 
 /**
  * 这是武器的基类
@@ -60,6 +61,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
 	USkeletalMeshComponent *WeaponSkeletalMeshComponent;
 
+	
+
 	// 枪骨骼里的枪口socket名字,用于武器骨骼的枪口位置
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Weapon)
 	FName MuzzlePosition{"MuzzleSocket"};
@@ -83,6 +86,14 @@ protected:
 	// 枪口火花资源(NiagaraSystem资源)
 	UPROPERTY(EditDefaultsOnly, Category=VFX)
 	UNiagaraSystem *MuzzleFX;
+
+	// 开火声音
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category=Sound)
+	USoundCue* FireSound;
+
+	// 没有子弹时的声音(包括子弹打空和弹匣打空)
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category=Sound)
+	USoundCue* NoAmmoSound;
 
 
 	/// 生成射线检测碰撞,如果发生Hit了则将HitResult数据填补
