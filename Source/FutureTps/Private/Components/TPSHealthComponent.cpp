@@ -5,6 +5,7 @@
 
 #include "GameFramework/Character.h"
 #include "GameMode/TPSGameModeBase.h"
+#include "Perception/AISense_Damage.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(MyUTPSHealthComponentLog, All, All)
@@ -90,6 +91,8 @@ void UTPSHealthComponent::ApplyDamage(float Damage, AController *InstigatedBy)
 		// 死亡则广播,所有接到通知并且已经绑定回调函数的将会调用回调函数处理
 		OnDeath.Broadcast();
 	}
+
+	ReportDamageEvent(Damage, InstigatedBy);
 }
 
 void UTPSHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, const UDamageType *DamageType,
@@ -159,4 +162,14 @@ float UTPSHealthComponent::GetPointDamagedModifiers(const FName &BoneName, AActo
 
 	return DamagedModifiers[PhysMaterial];
 
+}
+
+void UTPSHealthComponent::ReportDamageEvent(const float Damage, const AController *InstigatedBy) const
+{
+	if (!GetWorld() || !GetOwner() || !InstigatedBy || !InstigatedBy->GetPawn()) { return; }
+
+	UE_LOG(MyUTPSHealthComponentLog,Warning,TEXT("Report!"));
+	UAISense_Damage::ReportDamageEvent(GetWorld(), GetOwner(), InstigatedBy->GetPawn(), Damage,
+	                                   InstigatedBy->GetPawn()->GetActorLocation(),
+	                                   GetOwner()->GetActorLocation());
 }

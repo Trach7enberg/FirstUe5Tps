@@ -115,5 +115,11 @@ private:
 	/// @param Killer 
 	void KillPlayer(AController *Killer);
 
+	/// 根据TMap里映射好的关系获取当前骨骼点的伤害倍数
+	/// @param BoneName 
+	/// @param DamagedActor 
+	/// @return 伤害倍数
 	float GetPointDamagedModifiers(const FName & BoneName,AActor *DamagedActor) const;
+
+	void ReportDamageEvent(float Damage, const AController *InstigatedBy) const;
 };

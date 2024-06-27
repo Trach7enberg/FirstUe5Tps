@@ -19,13 +19,18 @@ void UTPSFindEnemyService::TickNode(UBehaviorTreeComponent &OwnerComp, uint8 *No
 
 	if (BlackBoard)
 	{
-		const auto Controller = OwnerComp.GetAIOwner();
-		const auto PerceptionComp = FTPSUtils::GetComponentByCurrentPlayer<UTPSAIPerceptionComponent>(Controller);
+		const auto AiController = OwnerComp.GetAIOwner();
+		if (!AiController || !AiController->GetPawn()) { return; }
+
+		const auto PerceptionComp = FTPSUtils::GetComponentByCurrentPlayer<UTPSAIPerceptionComponent>(AiController);
 
 		if (PerceptionComp)
 		{
+
+
 			//动态更新黑板上EnemyActorKeySelector的值,这个值可能为Null
-			BlackBoard->SetValueAsObject(EnemyActorKeySelector.SelectedKeyName, PerceptionComp->GetClosestEnemy());
+			BlackBoard->SetValueAsObject(EnemyActorKeySelector.SelectedKeyName,
+			                             PerceptionComp->GetClosestEnemy(AiController));
 		}
 	}
 

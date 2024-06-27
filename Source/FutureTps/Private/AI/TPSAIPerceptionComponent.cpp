@@ -5,18 +5,42 @@
 
 #include "AIController.h"
 #include "Components/TPSHealthComponent.h"
+#include "Perception/AISense_Damage.h"
 #include "Perception/AISense_Sight.h"
 #include "TPSUtil/TPSUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(MyUTPSAIPerceptionComponentLog, All, All)
 
-AActor *UTPSAIPerceptionComponent::GetClosestEnemy() const
+AActor *UTPSAIPerceptionComponent::GetClosestEnemy(const AAIController *AiController) const
 {
+	if (!AiController || !AiController->GetPawn()) { return nullptr; }
+
+
+	const auto SenseSightEnemy = GetClosestEnemy(UAISense_Sight::StaticClass());
+	const auto DamagedSenseEnemy = GetClosestEnemy(UAISense_Damage::StaticClass());
+
+	AActor *Actor = SenseSightEnemy ? SenseSightEnemy : DamagedSenseEnemy;
+
+	if (SenseSightEnemy && DamagedSenseEnemy)
+	{
+		Actor =
+			((SenseSightEnemy->GetActorLocation() - AiController->GetPawn()->GetActorLocation()).Length() <
+				(DamagedSenseEnemy->GetActorLocation() - AiController->GetPawn()->GetActorLocation()).Length())
+			? SenseSightEnemy
+			: DamagedSenseEnemy;
+	}
+	
+	return Actor;
+}
+
+AActor *UTPSAIPerceptionComponent::GetClosestEnemy(const TSubclassOf<UAISense> SenseToUse) const
+{
+	if (!SenseToUse) { return nullptr; }
 	TArray<AActor *> PerceiveActors;
 
-	// 根据视力配置,获得当前已感知到的所有Actors
-	// 注意是UAISense_Sight::StaticClass(),不是UAISense::StaticClass()
-	GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), PerceiveActors);
+	// 根据配置(比如视力配置、伤害感知配置),获得当前已感知到的所有Actors
+	// 注意格式是UAISense_Sight::StaticClass(),不是UAISense::StaticClass()
+	GetCurrentlyPerceivedActors(SenseToUse, PerceiveActors);
 
 	const auto AiController = Cast<AAIController>(GetOwner());
 
