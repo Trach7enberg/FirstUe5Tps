@@ -156,6 +156,14 @@ void ATPSBaseCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCo
 	PlayerInputComponent->BindAction("SwitchWeapons", IE_Pressed, WeaponLogicComponent,
 	                                 &UTPSWeaponLogicComponent::SwitchWeapon);
 
+	DECLARE_DELEGATE_OneParam(FAimInputSignature, bool);
+	InputComponent->BindAction<FAimInputSignature>("Aim", IE_Pressed, WeaponLogicComponent,
+	                                               &UTPSWeaponLogicComponent::Zoom, true);
+	InputComponent->BindAction<FAimInputSignature>("Aim", IE_Released, WeaponLogicComponent,
+	                                               &UTPSWeaponLogicComponent::Zoom, false);
+
+
+	// InputComponent->BindAction("Aim", IE_Released, WeaponLogicComponent, &ATPSPlayerController::ZoomOff);
 
 }
 
@@ -230,6 +238,9 @@ void ATPSBaseCharacter::OnDeath()
 	// 死亡之后不允许冲刺,比如角色生前是按着冲刺死亡,这时候就要关掉
 	BIsRush = false;
 	BCanRotatingCamera = false;
+
+	// 关闭瞄准缩放
+	WeaponLogicComponent->Zoom(false);
 
 	// 播放死亡声音
 	if (GetWorld()) { UGameplayStatics::PlaySoundAtLocation(GetWorld(), DeathSound, GetActorLocation()); }

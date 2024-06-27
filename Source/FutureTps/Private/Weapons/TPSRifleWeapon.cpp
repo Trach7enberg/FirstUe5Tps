@@ -10,6 +10,7 @@
 #include "Sound/SoundCue.h"
 
 #include "Components/AudioComponent.h"
+#include "Engine/DamageEvents.h"
 #include "TPSUtil/TPSUtils.h"
 
 
@@ -85,6 +86,16 @@ void ATPSRifleWeapon::AutoFire()
 	}
 }
 
+void ATPSRifleWeapon::Zoom(bool Enable)
+{
+	const auto Controller = Cast<APlayerController>(GetController());
+	if (!Controller || !Controller->PlayerCameraManager) { return; }
+
+	if (Enable) { DefaultCameraFov = Controller->PlayerCameraManager->GetFOVAngle(); }
+
+	Controller->PlayerCameraManager->SetFOV((Enable) ? FovZoomAngle : DefaultCameraFov);
+}
+
 
 bool ATPSRifleWeapon::GetTraceData(FVector &TraceStart, FVector &TraceEnd, float HalfConeAng) const
 {
@@ -152,9 +163,14 @@ void ATPSRifleWeapon::MakeShot()
 void ATPSRifleWeapon::MakeDamage(const FHitResult &HitResult)
 {
 	if (!HitResult.GetActor()) { return; }
+
+	// 传递点伤害事件
+	FPointDamageEvent PointDamageEvent;
+	PointDamageEvent.HitInfo = HitResult;
+	
 	if (ATPSBaseCharacter *AtpsBaseCharacter = Cast<ATPSBaseCharacter>(HitResult.GetActor()))
 	{
-		AtpsBaseCharacter->TakeDamage(WeaponDamage, FDamageEvent{}, GetController(), this);
+		AtpsBaseCharacter->TakeDamage(WeaponDamage, PointDamageEvent, GetController(), this);
 	}
 }
 

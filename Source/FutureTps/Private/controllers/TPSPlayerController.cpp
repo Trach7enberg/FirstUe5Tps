@@ -23,6 +23,8 @@ void ATPSPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("GamePause", IE_Pressed, this, &ATPSPlayerController::PauseGame);
 	InputComponent->BindAction("MuteSound", IE_Pressed, this, &ATPSPlayerController::OnMuteSound);
+
+	
 }
 
 
@@ -67,3 +69,5 @@ void ATPSPlayerController::OnMuteSound()
 	// UE_LOG(MyATPSPlayerControllerLog, Error, TEXT("Mute sound"));
 	GameInstance->ToggleVolume();
 }
+
+

@@ -8,6 +8,7 @@
 #include "TPSHealthComponent.generated.h"
 
 class UCameraShakeBase;
+class UPhysicalMaterial;
 
 UCLASS()
 class FUTURETPS_API UTPSHealthComponent : public UActorComponent
@@ -70,6 +71,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=VFX)
 	TSubclassOf<UCameraShakeBase> CameraShake;
 
+	// 物理材质对应的伤害倍数
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Health)
+	TMap<UPhysicalMaterial *, float> DamagedModifiers;
+
 private:
 	float Health = 0.0f;
 
@@ -77,11 +82,22 @@ private:
 	// 定时器
 	FTimerHandle HealTimerHandle;
 
+	void ApplyDamage(float Damage, AController *InstigatedBy);
+
 	// actor接受伤害时候会 回调该函数
 	UFUNCTION()
 	void OnTakeAnyDamage
 	(AActor *DamagedActor, float Damage, const class UDamageType *DamageType,
 	 class AController *InstigatedBy, AActor *DamageCauser);
+
+	UFUNCTION()
+	void OnTakePointDamage(AActor *DamagedActor, float Damage, class AController *InstigatedBy, FVector HitLocation,
+	                       class UPrimitiveComponent *FHitComponent, FName BoneName, FVector ShotFromDirection,
+	                       const class UDamageType *DamageType, AActor *DamageCauser);
+
+	UFUNCTION()
+	void OnTakeRadialDamage(AActor *DamagedActor, float Damage, const class UDamageType *DamageType, FVector Origin,
+	                        const FHitResult &HitInfo, class AController *InstigatedBy, AActor *DamageCauser);
 
 	// 回血函数
 	void SetHealth(float value);
@@ -95,5 +111,9 @@ private:
 	/// 播放抖动摄像机
 	void OscillationCamera() const;
 
+	/// 击杀玩家或者AI,记录击杀信息
+	/// @param Killer 
 	void KillPlayer(AController *Killer);
+
+	float GetPointDamagedModifiers(const FName & BoneName,AActor *DamagedActor) const;
 };

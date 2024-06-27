@@ -42,7 +42,7 @@ public:
 	bool IsBulletEmpty() const;
 	// 弹匣是否空了
 	bool IsMagzEmpty() const;
-	
+
 
 	// TODO 修复自动射击模式下半自动射击不灵敏问题 (实际是射速间隔(FireRate)导致的问题)
 	FORCEINLINE bool IsUnderFire() const { return BIsUnderFire; }
@@ -54,14 +54,16 @@ public:
 
 	/// 当前武器总弹药(弹匣+子弹)还剩多少百分比
 	/// @return 
-	float GetCurrentWeaponAmmoLeftPercent() const ;
+	float GetCurrentWeaponAmmoLeftPercent() const;
+
+	/// 武器瞄准
+	virtual void Zoom(bool Enable) {};
 
 protected:
 	// 武器模型, 需要在蓝图里手动初始化
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
 	USkeletalMeshComponent *WeaponSkeletalMeshComponent;
 
-	
 
 	// 枪骨骼里的枪口socket名字,用于武器骨骼的枪口位置
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Weapon)
@@ -74,6 +76,10 @@ protected:
 	// 开火状态
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Weapon)
 	bool BIsUnderFire = false;
+
+	// 武器瞄准时的视角缩放角度
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Weapon, meta=(ClampMin=40, ClampMax=100))
+	float FovZoomAngle = 50.f;
 
 	// 默认武器弹药数
 	UPROPERTY(EditDefaultsOnly, Category=Weapon)
@@ -88,13 +94,15 @@ protected:
 	UNiagaraSystem *MuzzleFX;
 
 	// 开火声音
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category=Sound)
-	USoundCue* FireSound;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Sound)
+	USoundCue *FireSound;
 
 	// 没有子弹时的声音(包括子弹打空和弹匣打空)
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category=Sound)
-	USoundCue* NoAmmoSound;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Sound)
+	USoundCue *NoAmmoSound;
 
+	// 默认最大摄像机视角
+	float DefaultCameraFov = 90.0f;
 
 	/// 生成射线检测碰撞,如果发生Hit了则将HitResult数据填补
 	/// @param HitResult 击中物体的信息
@@ -155,6 +163,8 @@ protected:
 private:
 	// 武器当前的弹药类
 	FAmmoData CurrentAmmo;
+
+
 
 
 };

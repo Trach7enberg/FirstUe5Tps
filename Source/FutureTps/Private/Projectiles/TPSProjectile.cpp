@@ -70,7 +70,6 @@ void ATPSProjectile::OnProjectileHit(UPrimitiveComponent *HitComponent, AActor *
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), DamageValue, GetActorLocation(), DamageRadius, nullptr,
 	                                    {GetOwner(),},
 	                                    this, GetPlayerController(), BIsDoFullDamage);
-
 	ProjectileMovementComponent->StopMovementImmediately();
 
 	// 播放特效

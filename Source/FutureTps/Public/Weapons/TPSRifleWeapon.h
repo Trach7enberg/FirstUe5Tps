@@ -25,6 +25,10 @@ public:
 	virtual void StopFire() override;
 	virtual void AutoFire() override;
 
+	/// 武器瞄准
+	/// @param Enable 
+	virtual void Zoom(bool Enable) override;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -35,12 +39,12 @@ protected:
 	// 子弹轨迹特效类资源
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=VFX)
 	UNiagaraSystem *BulletTraceNiagaraSystem;
-	
+
 	// 这个是Niagara系统中创建的变量的名字
 	// 我们将通过这个名字修改特效系统里的变量值
 	UPROPERTY(VisibleAnywhere, Category=VFX)
 	FName BeamEndName = "TraceTarget";
-	
+
 	// 自动开火速率
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta=(ClampMin = 0.01f, ClampMax=0.1f))
 	float FireRate = 0.05f;
@@ -88,4 +92,7 @@ private:
 	/// @param Start 
 	/// @param End 
 	void SpawnBulletTraceFX(const FVector &Start, const FVector &End) const;
+
+
+
 };

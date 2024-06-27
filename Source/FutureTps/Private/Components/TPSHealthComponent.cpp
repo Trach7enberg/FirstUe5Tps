@@ -3,6 +3,7 @@
 
 #include "Components/TPSHealthComponent.h"
 
+#include "GameFramework/Character.h"
 #include "GameMode/TPSGameModeBase.h"
 
 
@@ -13,8 +14,13 @@ UTPSHealthComponent::UTPSHealthComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 
-	// 绑定当受到任何伤害时回调的函数
-	if (AActor *Owner = GetOwner()) { Owner->OnTakeAnyDamage.AddDynamic(this, &UTPSHealthComponent::OnTakeAnyDamage); }
+	// 绑定当受到伤害时回调的函数
+	if (AActor *Owner = GetOwner())
+	{
+		// Owner->OnTakeAnyDamage.AddDynamic(this, &UTPSHealthComponent::OnTakeAnyDamage);
+		Owner->OnTakePointDamage.AddDynamic(this, &UTPSHealthComponent::OnTakePointDamage);
+		Owner->OnTakeRadialDamage.AddDynamic(this, &UTPSHealthComponent::OnTakeRadialDamage);
+	}
 
 	// 添加绑定自动回血委托
 	NeedHeal.AddUObject(this, &UTPSHealthComponent::HealHandle);
@@ -60,8 +66,7 @@ void UTPSHealthComponent::HealHandle()
 	}
 }
 
-void UTPSHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, const UDamageType *DamageType,
-                                          AController *InstigatedBy, AActor *DamageCauser)
+void UTPSHealthComponent::ApplyDamage(float Damage, AController *InstigatedBy)
 {
 	if (Damage <= 0 || IsDead()) { return; }
 
@@ -85,6 +90,32 @@ void UTPSHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, co
 		// 死亡则广播,所有接到通知并且已经绑定回调函数的将会调用回调函数处理
 		OnDeath.Broadcast();
 	}
+}
+
+void UTPSHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, const UDamageType *DamageType,
+                                          AController *InstigatedBy, AActor *DamageCauser)
+{
+	UE_LOG(MyUTPSHealthComponentLog, Warning, TEXT("AnyDamage! Damaged:%.1f"), Damage);
+}
+
+void UTPSHealthComponent::OnTakePointDamage(AActor *DamagedActor, float Damage, AController *InstigatedBy,
+                                            FVector HitLocation, UPrimitiveComponent *FHitComponent, FName BoneName,
+                                            FVector ShotFromDirection,
+                                            const UDamageType *DamageType, AActor *DamageCauser)
+{
+	float FinalDamage = Damage * GetPointDamagedModifiers(BoneName, DamagedActor);
+	UE_LOG(MyUTPSHealthComponentLog, Warning,
+	       TEXT("PointDamage! Damaged:%.1f , Bone:%s, Multiple:%.1f , FinalDamaged:%.1f"), Damage,
+	       *BoneName.ToString(), GetPointDamagedModifiers(BoneName,DamagedActor), FinalDamage);
+	ApplyDamage(FinalDamage, InstigatedBy);
+}
+
+void UTPSHealthComponent::OnTakeRadialDamage(AActor *DamagedActor, float Damage, const UDamageType *DamageType,
+                                             FVector Origin, const FHitResult &HitInfo, AController *InstigatedBy,
+                                             AActor *DamageCauser)
+{
+	UE_LOG(MyUTPSHealthComponentLog, Warning, TEXT("RadialDamage! Damaged:%.1f"), Damage);
+	ApplyDamage(Damage, InstigatedBy);
 }
 
 
@@ -114,4 +145,18 @@ void UTPSHealthComponent::KillPlayer(AController *Killer)
 	const auto VictimController = VictimPlayer ? VictimPlayer->GetController() : nullptr;
 
 	GameMode->KillPlayer(Killer, VictimController);
+}
+
+float UTPSHealthComponent::GetPointDamagedModifiers(const FName &BoneName, AActor *DamagedActor) const
+{
+	const auto Character = Cast<ACharacter>(DamagedActor);
+	if (!Character || DamagedModifiers.Num() == 0 || !Character->GetMesh() || !Character->GetMesh()->
+		GetBodyInstance(BoneName)) { return 1.0f; }
+
+	const auto PhysMaterial = Character->GetMesh()->GetBodyInstance(BoneName)->GetSimplePhysicalMaterial();
+	if (!PhysMaterial || !DamagedModifiers.Contains(PhysMaterial)) { return 1.0f; }
+
+
+	return DamagedModifiers[PhysMaterial];
+
 }

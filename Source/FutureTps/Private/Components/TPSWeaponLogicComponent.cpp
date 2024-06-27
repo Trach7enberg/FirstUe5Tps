@@ -232,6 +232,8 @@ void UTPSWeaponLogicComponent::SwitchWeapon()
 
 	if (Weapons.Num() == 0 || !CanSwitchWeapon()) { return; }
 
+	// 换武器关闭瞄准缩放
+	Zoom(false);
 
 	// 切换武器时如果手中有武器那么要停火
 	if (IsUnderFire()) { CurrentWeapon->StopFire(); }
@@ -243,6 +245,13 @@ void UTPSWeaponLogicComponent::SwitchWeapon()
 
 
 	EquipWeapon(CurrentWeaponIndex);
+}
+
+void UTPSWeaponLogicComponent::Zoom(bool Enable)
+{
+	if (!CurrentWeapon) { return; }
+
+	CurrentWeapon->Zoom(Enable);
 }
 
 

@@ -25,6 +25,10 @@ public:
 	void StopFire();
 	virtual void SwitchWeapon();
 
+	/// 武器瞄准
+	/// @param Enable 
+	virtual void Zoom(bool Enable);
+	
 	void Reload();
 
 	/// 按百分比补充弹匣数
